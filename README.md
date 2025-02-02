@@ -64,3 +64,67 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Struktur Folder
+kantin-system/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/
+│   │   │   │   ├── CategoryController.php
+│   │   │   │   └── ProductController.php
+│   │   │   ├── Kasir/
+│   │   │   │   └── OrderController.php
+│   │   │   └── Customer/
+│   │   │       └── OrderController.php
+│   │   └── Middleware/
+│   │       └── CheckRole.php
+│   └── Models/
+│       ├── User.php
+│       ├── Category.php
+│       ├── Product.php
+│       ├── Order.php
+│       └── OrderItem.php
+├── database/
+│   └── migrations/
+│       ├── create_users_table.php
+│       ├── create_categories_table.php
+│       ├── create_products_table.php
+│       ├── create_orders_table.php
+│       └── create_order_items_table.php
+├── resources/
+│   ├── css/
+│   │   └── app.css
+│   ├── js/
+│   │   └── app.js
+│   └── views/
+│       ├── admin/
+│       │   ├── dashboard.blade.php
+│       │   ├── categories/
+│       │   │   ├── index.blade.php
+│       │   │   └── form.blade.php
+│       │   └── products/
+│       │       ├── index.blade.php
+│       │       └── form.blade.php
+│       ├── kasir/
+│       │   ├── dashboard.blade.php
+│       │   └── orders/
+│       │       ├── index.blade.php
+│       │       └── detail.blade.php
+│       ├── customer/
+│       │   ├── menu.blade.php
+│       │   └── orders/
+│       │       ├── cart.blade.php
+│       │       └── history.blade.php
+│       ├── components/
+│       │   ├── navbar.blade.php
+│       │   └── sidebar.blade.php
+│       ├── layouts/
+│       │   └── master.blade.php (yang tadi kita buat)
+│       └── landing.blade.php
+├── routes/
+│   └── web.php
+└── public/
+    ├── images/
+    │   └── products/
+    └── build/ (hasil compile vite)
