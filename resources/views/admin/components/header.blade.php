@@ -27,7 +27,7 @@
         {{-- Profile Button --}}
         <button class="flex items-center space-x-2 focus:outline-none">
             <img src="https://ui-avatars.com/api/?name=Jhonlosan" alt="Profile" class="w-8 h-8 rounded-full">
-            <span class="text-sm font-medium text-gray-700 hidden md:block">Jhonlosan</span>
+            <span class="text-sm font-medium text-gray-700 hidden md:block">Umam</span>
             <svg class="w-4 h-4 text-gray-400 hidden md:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
