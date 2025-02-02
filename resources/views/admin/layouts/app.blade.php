@@ -16,9 +16,15 @@
 
     {{-- Alpine.js --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {{-- Font Awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     {{-- SweetAlert2 --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- ApexCharts --}}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     {{-- Custom Styles --}}
     <style>
@@ -27,15 +33,15 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-white">
-    <div class="flex h-screen bg-white">
+<body class="min-h-screen bg-gradient-to-b from-white via-blue-50  to-white">
+    <div class="flex h-screen bg-gradient-to-b from-white via-blue-50  to-white overflow-hidden">
         @include('admin.components.sidebar')
 
         {{-- Main Content --}}
         <div class="flex flex-col flex-1 w-0 overflow-hidden">
-            <main class="flex-1 relative overflow-y-auto focus:outline-none">
+            <main class="flex-1 relative overflow-y-auto focus:outline-none pt-16 md:pt-0">
                 <div class="py-6">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-4">
                         @yield('content')
                     </div>
                 </div>
