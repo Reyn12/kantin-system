@@ -27,15 +27,15 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-white">
-    <div class="flex h-screen bg-white">
+<body class="min-h-screen bg-gradient-to-b from-white via-blue-50  to-white">
+    <div class="flex h-screen bg-gradient-to-b from-white via-blue-50  to-white overflow-hidden">
         @include('admin.components.sidebar')
 
         {{-- Main Content --}}
         <div class="flex flex-col flex-1 w-0 overflow-hidden">
-            <main class="flex-1 relative overflow-y-auto focus:outline-none">
+            <main class="flex-1 relative overflow-y-auto focus:outline-none pt-16 md:pt-0">
                 <div class="py-6">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-4">
                         @yield('content')
                     </div>
                 </div>
