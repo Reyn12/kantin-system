@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Product;
 
 class OrderController extends Controller
 {
@@ -15,7 +17,8 @@ class OrderController extends Controller
     public function setTable(Request $request)
     {
         $request->validate([
-            'table_number' => 'required|numeric|min:1'
+            'table_number' => 'required|string|regex:/^[A-Z][0-9]+$/' // Format: Huruf kapital diikuti angka (A1, B2, dll)
+
         ]);
 
         session(['table_number' => $request->table_number]);
@@ -29,8 +32,10 @@ class OrderController extends Controller
 
     public function menu()
     {
-        $categories = \App\Models\Category::all();
-        $products = \App\Models\Product::with('category')->get();
+        $categories = Category::all();
+        $products = Product::where('status', true)
+                          ->where('stok', '>', 0)
+                          ->get();
 
         return view('order.menu', compact('categories', 'products'));
     }
