@@ -33,11 +33,4 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    // Accessor untuk format harga
-    protected function harga(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => number_format($value, 0, ',', '.'),
-        );
-    }
 }

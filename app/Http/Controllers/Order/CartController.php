@@ -10,7 +10,8 @@ class CartController extends Controller
 {
     public function index()
     {
-        return view('order.cart');
+        $cart = session()->get('cart', []);
+        return view('order.cart', compact('cart'));
     }
 
     public function add(Request $request)
@@ -25,8 +26,8 @@ class CartController extends Controller
             $cart[$product->id]['quantity'] += $request->quantity;
         } else {
             $cart[$product->id] = [
-                'name' => $product->name,
-                'price' => $product->price,
+                'name' => $product->nama_produk,
+                'price' => $product->harga,
                 'quantity' => $request->quantity
             ];
         }
