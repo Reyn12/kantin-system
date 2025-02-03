@@ -23,7 +23,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(AdminMiddleware::class)->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         
-        // Products Routes
+        // Products Management Routes
         Route::prefix('products')->group(function () {
             Route::get('/', [AdminProductController::class, 'index'])->name('admin.products');
             Route::post('/', [AdminProductController::class, 'store']);
@@ -36,7 +36,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/download/excel', [AdminProductController::class, 'downloadExcel'])->name('admin.products.download.excel');
         });
         
-        // Categories Routes
+        // Categories Management Routes
         Route::prefix('categories')->group(function () {
             Route::get('/', [AdminCategoryController::class, 'index'])->name('admin.categories');
             Route::post('/', [AdminCategoryController::class, 'store']);
@@ -45,7 +45,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{id}', [AdminCategoryController::class, 'destroy']);
         });
 
-        // Orders Routes
+        // Orders Management Routes
         Route::prefix('orders')->group(function () {
             Route::get('/', [AdminOrderController::class, 'index'])->name('admin.orders');
             Route::post('/', [AdminOrderController::class, 'store']);
@@ -53,7 +53,5 @@ Route::prefix('admin')->group(function () {
             Route::put('/{id}', [AdminOrderController::class, 'update']);
             Route::delete('/{id}', [AdminOrderController::class, 'destroy']);
         });
-        
-        // Add more admin routes here
     });
 });
