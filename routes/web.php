@@ -55,3 +55,24 @@ Route::prefix('admin')->group(function () {
         });
     });
 });
+
+// Order Routes
+Route::prefix('order')->name('order.')->group(function () {
+    // Halaman scan QR/input meja
+    Route::get('/', [App\Http\Controllers\Order\OrderController::class, 'index'])->name('index');
+    
+    // Submit nomor meja
+    Route::post('/table', [App\Http\Controllers\Order\OrderController::class, 'setTable'])->name('set-table');
+    
+    // Halaman menu (perlu middleware cek nomor meja)
+    Route::middleware(['check.table.number'])->group(function () {
+        Route::get('/menu', [App\Http\Controllers\Order\OrderController::class, 'menu'])->name('menu');
+        Route::get('/status', [App\Http\Controllers\Order\OrderController::class, 'status'])->name('status');
+        
+        // Cart routes
+        Route::post('/cart/add', [App\Http\Controllers\Order\CartController::class, 'add'])->name('cart.add');
+        Route::post('/cart/update', [App\Http\Controllers\Order\CartController::class, 'update'])->name('cart.update');
+        Route::post('/cart/remove', [App\Http\Controllers\Order\CartController::class, 'remove'])->name('cart.remove');
+        Route::post('/cart/checkout', [App\Http\Controllers\Order\CartController::class, 'checkout'])->name('cart.checkout');
+    });
+});
