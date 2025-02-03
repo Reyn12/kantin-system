@@ -21,12 +21,17 @@
             
             // Create form data
             const formData = new FormData();
-            formData.append('table_number', decodedText.toUpperCase());
+            formData.append('table_number', decodedText); // Kirim langsung tanpa toUpperCase()
             formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
             
+            console.log('Sending table number:', decodedText); // Debug log
+
             // Submit table number via POST
             fetch('{{ route('order.set-table') }}', {
                 method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
                 body: formData
             })
             .then(response => {

@@ -1,7 +1,15 @@
 @extends('order.layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+@php
+        use Illuminate\Support\Facades\Log;
+
+        $cart = session()->get('cart', []);
+        $total = 0;
+        $tableNumber = session('table_number');
+        Log::info('Cart page - table number from session:', ['table_number' => $tableNumber]);
+@endphp
+<div class="container mx-auto px-4 py-8 min-h-screen">
     <!-- Header with back button -->
     <div class="flex items-center mb-6">
         <a href="{{ route('order.menu') }}" class="mr-4">
@@ -9,11 +17,6 @@
         </a>
         <h1 class="text-2xl font-bold">Keranjang</h1>
     </div>
-    
-    @php
-        $cart = session()->get('cart', []);
-        $total = 0;
-    @endphp
     
     @if(count($cart) > 0)
         <div class="space-y-4 mb-24"> <!-- Added margin bottom for fixed checkout bar -->
@@ -23,7 +26,7 @@
                     <div class="flex justify-between items-center">
                         <div class="flex-1">
                             <h3 class="font-medium">{{ $details['name'] }}</h3>
-                            <p class="text-orange-500 font-semibold">Rp {{ number_format($details['price']) }}</p>
+                            <p class="text-orange-500 font-semibold">Rp {{ number_format($details['price'], 0, ',', '.') }}</p>
                         </div>
                         <div class="flex items-center space-x-4">
                             <!-- Quantity controls -->
@@ -47,7 +50,7 @@
                     </div>
                     <!-- Subtotal for this item -->
                     <div class="mt-2 text-sm text-gray-500">
-                        Subtotal: Rp {{ number_format($details['price'] * $details['quantity']) }}
+                        Subtotal: Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
                     </div>
                 </div>
             @endforeach
@@ -59,16 +62,54 @@
                 <div class="flex justify-between items-center mb-4">
                     <div>
                         <p class="text-gray-500">Total Pesanan:</p>
-                        <p class="text-xl font-bold">Rp {{ number_format($total) }}</p>
+                        <p class="text-xl font-bold">Rp {{ number_format($total, 0, ',', '.') }}</p>
                     </div>
-                    <form action="{{ route('order.cart.checkout') }}" method="POST">
-                        @csrf
-                        <button type="submit" 
-                                class="bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition">
-                            Pesan Sekarang
-                        </button>
-                    </form>
+                    <button onclick="showCheckoutModal()" 
+                            class="bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition">
+                        Pesan Sekarang
+                    </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Checkout Modal -->
+        <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                <h2 class="text-xl font-bold mb-4">Data Pemesan</h2>
+                <form action="{{ route('order.cart.checkout') }}" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2">Nama</label>
+                            <input type="text" name="customer_name" required
+                                   class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                   placeholder="Masukkan nama kamu">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">No. Telepon</label>
+                            <input type="tel" name="customer_phone" required
+                                   class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                   placeholder="Masukkan nomor telepon">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">No. Meja</label>
+                            <input type="text" name="table_number" required readonly
+                                   value="{{ $tableNumber }}"
+                                   class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                   placeholder="Masukkan nomor meja">
+                        </div>
+                        <div class="flex space-x-4 mt-6">
+                            <button type="button" onclick="hideCheckoutModal()"
+                                    class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                    class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                                Konfirmasi
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     @else
@@ -131,6 +172,16 @@ function removeFromCart(productId) {
             window.location.reload();
         }
     });
+}
+
+function showCheckoutModal() {
+    document.getElementById('checkoutModal').classList.remove('hidden');
+    document.getElementById('checkoutModal').classList.add('flex');
+}
+
+function hideCheckoutModal() {
+    document.getElementById('checkoutModal').classList.add('hidden');
+    document.getElementById('checkoutModal').classList.remove('flex');
 }
 </script>
 @endpush

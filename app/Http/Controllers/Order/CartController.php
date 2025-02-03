@@ -64,9 +64,28 @@ class CartController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function checkout()
+    public function checkout(Request $request)
     {
-        // Nanti implement checkout di sini
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_phone' => 'required|string|max:20',
+            'table_number' => 'required|integer|min:1'
+        ]);
+
+        $cart = session()->get('cart', []);
+        
+        if(empty($cart)) {
+            return redirect()->route('order.menu')->with('error', 'Keranjang kosong!');
+        }
+
+        // Simpan data customer ke session
+        session()->put('customer_info', [
+            'name' => $request->customer_name,
+            'phone' => $request->customer_phone,
+            'table' => $request->table_number
+        ]);
+
+        // Redirect ke halaman konfirmasi atau status
         return redirect()->route('order.status');
     }
 }

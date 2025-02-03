@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -16,8 +17,13 @@ class OrderController extends Controller
 
     public function setTable(Request $request)
     {
+        Log::info('Table number received:', [
+            'table_number' => $request->table_number,
+            'all_data' => $request->all()
+        ]);
+
         $request->validate([
-            'table_number' => 'required|string|regex:/^[A-Z][0-9]+$/' // Format: Huruf kapital diikuti angka (A1, B2, dll)
+            'table_number' => 'required|string' // Terima semua format nomor meja
 
         ]);
 
