@@ -18,113 +18,11 @@
         </div>
 
         {{-- Table Section --}}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3">Gambar</th>
-                            <th class="px-6 py-3">Nama Produk</th>
-                            <th class="px-6 py-3">Harga</th>
-                            <th class="px-6 py-3">Stok</th>
-                            <th class="px-6 py-3">Status</th>
-                            <th class="px-6 py-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @foreach($products as $product)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <img src="{{ asset('storage/' . $product->gambar_url) }}" 
-                                     alt="{{ $product->nama_produk }}" 
-                                     class="w-16 h-16 object-cover rounded-lg">
-                            </td>
-                            <td class="px-6 py-4">{{ $product->nama_produk }}</td>
-                            <td class="px-6 py-4">Rp {{ number_format($product->harga * 1000, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4">
-                                <input type="number" value="{{ $product->stok }}" 
-                                       class="w-20 px-2 py-1 border rounded-lg"
-                                       onchange="updateStock({{ $product->id }}, this.value)">
-                            </td>
-                            <td class="px-6 py-4">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" 
-                                           id="status-toggle-{{ $product->id }}"
-                                           {{ $product->status === 'tersedia' ? 'checked' : '' }}
-                                           onchange="updateStatus({{ $product->id }}, this.checked)">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                    <span class="ml-2 text-sm text-gray-600" id="status-text-{{ $product->id }}">
-                                        {{ $product->status === 'tersedia' ? 'Tersedia' : 'Tidak Tersedia' }}
-                                    </span>
-                                </label>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex gap-2">
-                                    <button onclick="openModal('editProductModal', {{ $product->id }})" 
-                                            class="text-blue-500 hover:text-blue-600">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteProduct({{ $product->id }})" 
-                                            class="text-red-500 hover:text-red-600">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        @include('admin.products.components.table')
     </div>
 
     {{-- Add/Edit Product Modal --}}
-    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 class="text-xl font-bold mb-4" id="modalTitle">Tambah Produk</h3>
-            <form id="productForm" class="space-y-4" onsubmit="handleSubmit(event)">
-                <input type="hidden" id="productId" value="">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Kategori</label>
-                    <select name="category_id" class="w-full px-3 py-2 border rounded-lg">
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Nama Produk</label>
-                    <input type="text" name="nama_produk" class="w-full px-3 py-2 border rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Deskripsi</label>
-                    <textarea name="deskripsi" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Harga (Rp)</label>
-                    <input type="number" name="harga" class="w-full px-3 py-2 border rounded-lg" 
-                           placeholder="Contoh: 15000">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Stok</label>
-                    <input type="number" name="stok" class="w-full px-3 py-2 border rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Gambar</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full">
-                </div>
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeModal()" 
-                            class="px-4 py-2 text-gray-600 hover:text-gray-800">
-                        Batal
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                        Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    @include('admin.products.components.modal-add-edit')
     @push('scripts')
     <script>
         // Function untuk update status
@@ -164,10 +62,14 @@
             const modal = $('#productModal');
             const form = $('#productForm');
             const title = $('#modalTitle');
+            const methodField = $('#methodField');
             
             // Reset form
             form[0].reset();
             $('#productId').val(id);
+
+            // Set method field
+            methodField.val(id ? 'PUT' : 'POST');
             
             // Set title
             title.text(id ? 'Edit Produk' : 'Tambah Produk');
@@ -175,11 +77,12 @@
             // If editing, fill form with product data
             if (id) {
                 $.get(`/admin/products/${id}/edit`, function(data) {
-                    form.find('[name="nama_produk"]').val(data.nama_produk);
-                    form.find('[name="category_id"]').val(data.category_id);
-                    form.find('[name="deskripsi"]').val(data.deskripsi);
-                    form.find('[name="harga"]').val(data.harga);
-                    form.find('[name="stok"]').val(data.stok);
+                    // Sekarang data.product karena response dari controller berubah
+                    form.find('[name="nama_produk"]').val(data.product.nama_produk);
+                    form.find('[name="category_id"]').val(data.product.category_id);
+                    form.find('[name="deskripsi"]').val(data.product.deskripsi);
+                    form.find('[name="harga"]').val(data.product.harga);
+                    form.find('[name="stok"]').val(data.product.stok);
                 });
             }
             
@@ -194,40 +97,78 @@
         function handleSubmit(event) {
             event.preventDefault();
             
-            const form = $(event.target);
-            const id = $('#productId').val();
-            const formData = new FormData(form[0]);
+            // Basic form validation
+            const form = event.target;
+            const formData = new FormData(form);
+            const productId = $('#productId').val();
             
-            // Convert harga to database format (divide by 1000)
-            formData.set('harga', parseInt(formData.get('harga')) / 1000);
+            // Validation checks
+            if (!formData.get('category_id')) {
+                Swal.fire('Error', 'Pilih kategori dulu ya!', 'error');
+                return;
+            }
             
+            if (!formData.get('nama_produk')) {
+                Swal.fire('Error', 'Nama produk harus diisi ya!', 'error');
+                return;
+            }
+            
+            if (!formData.get('harga') || formData.get('harga') <= 0) {
+                Swal.fire('Error', 'Harga harus lebih dari 0 ya!', 'error');
+                return;
+            }
+            
+            if (!formData.get('stok') || formData.get('stok') < 0) {
+                Swal.fire('Error', 'Stok tidak boleh negatif ya!', 'error');
+                return;
+            }
+            
+            // Show loading state
+            Swal.fire({
+                title: 'Loading...',
+                text: 'Lagi nyimpen produk nih...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Tentukan URL dan method
+            const url = productId ? `/admin/products/${productId}` : '/admin/products';
+            
+            // Jika ini update (PUT), tambahkan _method ke FormData
+            if (productId) {
+                formData.append('_method', 'PUT');
+            }
+
+            // Submit form
             $.ajax({
-                url: id ? `/admin/products/${id}` : '/admin/products',
-                method: id ? 'PUT' : 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                url: url,
+                method: 'POST', // Selalu POST, Laravel akan handle method spoofing
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(data) {
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: data.message,
-                        timer: 1500,
-                        showConfirmButton: false
+                        text: productId ? 'Produk berhasil diupdate' : 'Produk berhasil ditambahkan',
+                        showConfirmButton: false,
+                        timer: 1500
                     }).then(() => {
                         window.location.reload();
                     });
                 },
-                error: function(error) {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan saat menyimpan produk'
-                    });
+                error: function(xhr) {
+                    let errorMessage = 'Terjadi kesalahan. Coba lagi ya!';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    Swal.fire('Error', errorMessage, 'error');
                 }
             });
         }

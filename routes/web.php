@@ -21,6 +21,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(AdminMiddleware::class)->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('products', [AdminProductController::class, 'index'])->name('admin.products');
+        Route::post('products', [AdminProductController::class, 'store']); // Tambah ini
         Route::get('products/{id}/edit', [AdminProductController::class, 'edit']);
         Route::put('products/{id}', [AdminProductController::class, 'update']);
         Route::delete('products/{id}', [AdminProductController::class, 'destroy']);

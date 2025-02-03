@@ -91,8 +91,12 @@ class AdminProductController extends Controller
 
         try {
             $product = Product::findOrFail($id);
+            $categories = Category::all();
             Log::info('Produk ditemukan');
-            return response()->json($product);
+            return response()->json([
+                'product' => $product,
+                'categories' => $categories
+            ]);
         } catch (\Exception $e) {
             Log::error('Error saat get produk: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
