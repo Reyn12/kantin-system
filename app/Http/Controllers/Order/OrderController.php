@@ -48,33 +48,46 @@ class OrderController extends Controller
 
     public function status()
     {
-        $order = []; // Nanti ambil dari database berdasarkan table_number
+        // Ambil data cart dan customer dari session
+        $cart = session()->get('cart', []);
+        $customer = session()->get('customer_info');
+        
+        if(empty($cart) || empty($customer)) {
+            return redirect()->route('order.menu')->with('error', 'Data pesanan tidak ditemukan!');
+        }
 
-        return view('order.status', compact('order'));
+        // Hitung total
+        $total = 0;
+        foreach($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return view('order.status', compact('cart', 'customer', 'total'));
     }
 
     public function getProductsByCategory($category)
-{
-    $query = Product::query();
-    
-    if ($category !== 'all') {
-        $query->where('category_id', $category);
-    }
-    
-    $products = $query->where('status', 'tersedia')->get();
-    
-    // Transform products untuk handle image path
-    $products = $products->map(function ($product) {
-        $staticImagePath = 'images/products/' . basename($product->gambar_url);
-        $product->image_url = file_exists(public_path($staticImagePath))
-            ? asset($staticImagePath)
-            : asset('storage/' . $product->gambar_url);
-        return $product;
-    });
+    {
+        $query = Product::query();
+        
+        if ($category !== 'all') {
+            $query->where('category_id', $category);
+        }
+        
+        $products = $query->where('status', 'tersedia')->get();
+        
+        // Transform products untuk handle image path
+        $products = $products->map(function ($product) {
+            $staticImagePath = 'images/products/' . basename($product->gambar_url);
+            $product->image_url = file_exists(public_path($staticImagePath))
+                ? asset($staticImagePath)
+                : asset('storage/' . $product->gambar_url);
+            return $product;
+        });
 
-    return response()->json([
-        'success' => true,
-        'products' => $products
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'products' => $products
+        ]);
+    }
+
 }
