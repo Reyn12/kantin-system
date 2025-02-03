@@ -133,44 +133,46 @@ function updateCart(productId, quantity) {
         removeFromCart(productId);
         return;
     }
+
+    const formData = new FormData();
+    formData.append('product_id', productId);
+    formData.append('quantity', quantity);
+    formData.append('_token', '{{ csrf_token() }}');
     
     fetch('{{ route('order.cart.update') }}', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-            product_id: productId,
-            quantity: quantity
-        })
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             window.location.reload();
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
 }
 
 function removeFromCart(productId) {
     if (!confirm('Yakin ingin menghapus item ini?')) return;
     
+    const formData = new FormData();
+    formData.append('product_id', productId);
+    formData.append('_token', '{{ csrf_token() }}');
+
     fetch('{{ route('order.cart.remove') }}', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-            product_id: productId
-        })
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             window.location.reload();
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
 }
 

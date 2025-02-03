@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Support\Facades\Log;
+
 
 class OrderController extends Controller
 {
@@ -48,21 +50,37 @@ class OrderController extends Controller
 
     public function status()
     {
-        // Ambil data cart dan customer dari session
-        $cart = session()->get('cart', []);
-        $customer = session()->get('customer_info');
+        // Ambil order terakhir dari user
+        $order = Order::with(['items.product', 'user'])
+                     ->latest()
+                     ->first();
         
-        if(empty($cart) || empty($customer)) {
+        if (!$order) {
             return redirect()->route('order.menu')->with('error', 'Data pesanan tidak ditemukan!');
         }
 
-        // Hitung total
-        $total = 0;
-        foreach($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+        // Format data untuk view
+        $customer = [
+            'name' => $order->user->name,
+            'phone' => $order->user->phone,
+            'table' => $order->nomor_meja
+        ];
+
+        $items = [];
+        foreach($order->items as $item) {
+            $items[$item->product_id] = [
+                'name' => $item->product->nama,
+                'price' => $item->harga_satuan,
+                'quantity' => $item->jumlah
+            ];
         }
 
-        return view('order.status', compact('cart', 'customer', 'total'));
+        return view('order.status', [
+            'customer' => $customer,
+            'cart' => $items,
+            'total' => $order->total_harga,
+            'order' => $order
+        ]);
     }
 
     public function getProductsByCategory($category)

@@ -58,11 +58,19 @@ class CartController extends Controller
 
     public function remove(Request $request)
     {
-        $cart = session()->get('cart', []);
+        Log::info('Cart remove request:', $request->all());
         
-        if (isset($cart[$request->product_id])) {
-            unset($cart[$request->product_id]);
+        $request->validate([
+            'product_id' => 'required|numeric'
+        ]);
+
+        $cart = session()->get('cart', []);
+        $productId = $request->product_id;
+        
+        if (isset($cart[$productId])) {
+            unset($cart[$productId]);
             session()->put('cart', $cart);
+            Log::info('Item removed from cart');
         }
         
         return response()->json(['success' => true]);
@@ -140,7 +148,7 @@ class CartController extends Controller
             ]);
 
             // Clear cart session
-            session()->forget('cart');
+            session()->forget(['cart', 'customer_info']);
 
             Log::info('Checkout completed successfully');
 

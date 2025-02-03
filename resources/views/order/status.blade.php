@@ -7,6 +7,7 @@
         <div class="text-center mb-8">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Pesanan Diterima!</h1>
             <p class="text-gray-600">Mohon tunggu pesananmu sedang diproses</p>
+            <p class="text-sm text-gray-500 mt-2">Kode Pesanan: #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</p>
         </div>
 
         <!-- Customer Info -->
@@ -16,6 +17,16 @@
                 <p class="mb-2"><span class="font-medium">Nama:</span> {{ $customer['name'] }}</p>
                 <p class="mb-2"><span class="font-medium">No. Telepon:</span> {{ $customer['phone'] }}</p>
                 <p><span class="font-medium">No. Meja:</span> {{ $customer['table'] }}</p>
+                <p class="mt-2"><span class="font-medium">Status:</span> 
+                    <span class="px-2 py-1 rounded text-sm
+                        @if($order->status == 'menunggu_pembayaran') bg-yellow-100 text-yellow-800
+                        @elseif($order->status == 'diproses') bg-blue-100 text-blue-800
+                        @elseif($order->status == 'selesai') bg-green-100 text-green-800
+                        @else bg-red-100 text-red-800
+                        @endif">
+                        {{ ucwords(str_replace('_', ' ', $order->status)) }}
+                    </span>
+                </p>
             </div>
         </div>
 
