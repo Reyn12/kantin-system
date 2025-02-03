@@ -34,7 +34,7 @@
                             <tr class="even:bg-gray-50 odd:bg-white hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ $order->id }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->customer->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->kasir->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->kasir ? $order->kasir->name : "-" }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->nomor_meja }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $order->total_harga }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-sm text-gray-600">Kasir</span>
-                                    <span class="font-medium">${order.kasir.name}</span>
+                                    <span class="font-medium">${order.kasir?.name ?? '-'}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-sm text-gray-600">Nomor Meja</span>
