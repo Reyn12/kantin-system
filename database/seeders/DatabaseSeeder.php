@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $customer = User::create([
-            'name' => 'Customer',
+            'name' => 'Umam',
             'email' => 'customer@kantin.test',
             'password' => Hash::make('customer'),
             'role' => 'customer'
@@ -154,6 +154,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'selesai',
             'nomor_meja' => 'A1',
             'waktu_pembayaran' => now(),
+            'created_at' => now()
         ]);
 
         $order2 = Order::create([
@@ -162,6 +163,7 @@ class DatabaseSeeder extends Seeder
             'total_harga' => 15000,
             'status' => 'menunggu_pembayaran',
             'nomor_meja' => 'B2',
+            'created_at' => now()
         ]);
 
         $order3 = Order::create([
@@ -171,16 +173,18 @@ class DatabaseSeeder extends Seeder
             'status' => 'diproses',
             'nomor_meja' => 'C3',
             'waktu_pembayaran' => now(),
+            'created_at' => now()
         ]);
 
-        // Create more orders
+        // Orders kemarin
         $order4 = Order::create([
             'user_id' => $customer2->id,
             'kasir_id' => $kasir2->id,
             'total_harga' => 55000,
             'status' => 'selesai',
             'nomor_meja' => 'D4',
-            'waktu_pembayaran' => now()->subHours(2),
+            'waktu_pembayaran' => now()->subDay(),
+            'created_at' => now()->subDay()
         ]);
 
         $order5 = Order::create([
@@ -189,6 +193,7 @@ class DatabaseSeeder extends Seeder
             'total_harga' => 30000,
             'status' => 'menunggu_pembayaran',
             'nomor_meja' => 'E5',
+            'created_at' => now()->subDay()
         ]);
 
         $order6 = Order::create([
@@ -197,7 +202,8 @@ class DatabaseSeeder extends Seeder
             'total_harga' => 43000,
             'status' => 'diproses',
             'nomor_meja' => 'F6',
-            'waktu_pembayaran' => now()->subMinutes(30),
+            'waktu_pembayaran' => now()->subDay(),
+            'created_at' => now()->subDay()
         ]);
 
         // Create Order Items

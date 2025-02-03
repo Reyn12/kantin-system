@@ -149,8 +149,8 @@
                             </a>
 
                             {{-- Products --}}
-                            <a href="#" 
-                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out
+                            <a href="{{ route('admin.products') }}" 
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out cursor-pointer
                                 {{ request()->routeIs('admin.products') ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg shadow-purple-200' : 'text-gray-600 hover:bg-purple-50' }}">
                                 <svg class="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />

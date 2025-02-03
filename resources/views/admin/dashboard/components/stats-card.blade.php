@@ -10,10 +10,14 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span>Pendapatan Hari Ini</span>
-                        <span class="px-1.5 py-0.5 bg-green-400/20 text-green-300 rounded text-xs">+24%</span>
+                        @if($persentasePendapatan > 0)
+                            <span class="px-1.5 py-0.5 bg-green-400/20 text-green-300 rounded text-xs">+{{ $persentasePendapatan }}%</span>
+                        @elseif($persentasePendapatan <= 0)
+                            <span class="px-1.5 py-0.5 bg-red-400/20 text-red-300 rounded text-xs">{{ $persentasePendapatan }}%</span>
+                        @endif
                     </div>
-                    <div class="text-2xl font-bold mt-1">Rp350.000</div>
-                    <div class="text-sm opacity-80">Kemarin: Rp170.000</div>
+                    <div class="text-2xl font-bold mt-1">Rp{{ number_format($pendapatanHariIni, 0, ',', '.') }}</div>
+                    <div class="text-sm opacity-80">Kemarin: Rp{{ number_format($pendapatanKemarin, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>
@@ -27,10 +31,14 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span>Total Pesanan</span>
-                        <span class="px-1.5 py-0.5 bg-green-400/20 text-green-300 rounded text-xs">+14%</span>
+                        @if($persentasePesanan > 0)
+                            <span class="px-1.5 py-0.5 bg-green-400/20 text-green-300 rounded text-xs">+{{ $persentasePesanan }}%</span>
+                        @elseif($persentasePesanan <= 0)
+                            <span class="px-1.5 py-0.5 bg-red-400/20 text-red-300 rounded text-xs">{{ $persentasePesanan }}%</span>
+                        @endif
                     </div>
-                    <div class="text-2xl font-bold mt-1">45</div>
-                    <div class="text-sm opacity-80">Kemarin: 32</div>
+                    <div class="text-2xl font-bold mt-1">{{ $pesananHariIni }}</div>
+                    <div class="text-sm opacity-80">Kemarin: {{ $pesananKemarin }}</div>
                 </div>
             </div>
         </div>
@@ -44,10 +52,9 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span>Menu Terlaris</span>
-                        <span class="px-1.5 py-0.5 bg-green-400/20 text-green-300 rounded text-xs">+43%</span>
                     </div>
-                    <div class="text-xl font-bold mt-1">Nasi Goreng</div>
-                    <div class="text-sm opacity-80">Terjual: 15 porsi</div>
+                    <div class="text-xl font-bold mt-1">{{ $menuTerlaris->product->nama_produk ?? 'Belum ada' }}</div>
+                    <div class="text-sm opacity-80">Terjual: {{ $menuTerlaris->total_terjual ?? 0 }} porsi</div>
                 </div>
             </div>
         </div>
