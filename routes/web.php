@@ -21,6 +21,11 @@ Route::prefix('admin')->group(function () {
     Route::middleware(AdminMiddleware::class)->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('products', [AdminProductController::class, 'index'])->name('admin.products');
+        Route::get('products/{id}/edit', [AdminProductController::class, 'edit']);
+        Route::put('products/{id}', [AdminProductController::class, 'update']);
+        Route::delete('products/{id}', [AdminProductController::class, 'destroy']);
+        Route::post('products/{id}/status', [AdminProductController::class, 'updateStatus']);
+        Route::post('products/{id}/stock', [AdminProductController::class, 'updateStock']);
         
         // Add more admin routes here
     });
