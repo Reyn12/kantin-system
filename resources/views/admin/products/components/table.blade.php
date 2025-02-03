@@ -15,7 +15,14 @@
                 @foreach($products as $product)
                 <tr class="even:bg-gray-50 odd:bg-white hover:bg-gray-50">
                     <td class="px-6 py-4">
-                        <img src="{{ asset('storage/' . $product->gambar_url) }}" 
+                        @php
+                            $staticImagePath = 'images/products/' . basename($product->gambar_url);
+                            $staticImageExists = file_exists(public_path($staticImagePath));
+                        @endphp
+                        
+                        <img src="{{ $staticImageExists 
+                                  ? asset($staticImagePath) 
+                                  : asset('storage/' . $product->gambar_url) }}" 
                              alt="{{ $product->nama_produk }}" 
                              class="w-16 h-16 object-cover rounded-lg">
                     </td>

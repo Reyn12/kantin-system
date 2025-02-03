@@ -36,18 +36,34 @@
             .then(data => {
                 console.log("Response data:", data);
                 if (data.success) {
-                    window.location.href = data.redirect;
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Meja berhasil dipilih',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = data.redirect;
+                    });
                 } else {
-                    alert('Nomor meja tidak valid!');
-                    // Restart scanner kalo gagal
-                    startScanner();
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Nomor meja tidak valid!',
+                        icon: 'error'
+                    }).then(() => {
+                        startScanner();
+                    });
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat memproses nomor meja');
-                // Restart scanner kalo error
-                startScanner();
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat memproses nomor meja',
+                    icon: 'error'
+                }).then(() => {
+                    startScanner();
+                });
             });
         }
 
@@ -68,7 +84,11 @@
                 }
             ).catch((err) => {
                 console.error(`QR Code scanning failed: ${err}`);
-                alert("Gagal mengakses kamera. Pastikan kamu sudah memberi izin kamera.");
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Gagal mengakses kamera. Pastikan kamu sudah memberi izin kamera.',
+                    icon: 'error'
+                });
             });
         }
 

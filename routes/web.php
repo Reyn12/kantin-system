@@ -69,6 +69,10 @@ Route::prefix('order')->name('order.')->group(function () {
     // Halaman menu (perlu middleware cek nomor meja)
     Route::middleware([CheckTableNumber::class])->group(function () {
         Route::get('/menu', [App\Http\Controllers\Order\OrderController::class, 'menu'])->name('menu');
+        // Tambah route filter produk di sini
+        Route::get('/products/{category}', [App\Http\Controllers\Order\OrderController::class, 'getProductsByCategory'])
+            ->name('products.by.category');
+        
         Route::get('/status', [App\Http\Controllers\Order\OrderController::class, 'status'])->name('status');
         
         // Cart routes

@@ -47,6 +47,27 @@
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Header -->
+    <div class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="max-w-md mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-lg font-semibold">Menu Kami</h1>
+                    <p class="text-sm text-gray-500">Kantin System</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="{{ route('order.cart') }}" class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Container -->
     <div class="min-h-screen max-w-md mx-auto bg-white shadow-sm">
         <!-- Top Navigation (optional) -->

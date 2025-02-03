@@ -46,4 +46,29 @@ class OrderController extends Controller
 
         return view('order.status', compact('order'));
     }
+
+    public function getProductsByCategory($category)
+{
+    $query = Product::query();
+    
+    if ($category !== 'all') {
+        $query->where('category_id', $category);
+    }
+    
+    $products = $query->where('status', 'tersedia')->get();
+    
+    // Transform products untuk handle image path
+    $products = $products->map(function ($product) {
+        $staticImagePath = 'images/products/' . basename($product->gambar_url);
+        $product->image_url = file_exists(public_path($staticImagePath))
+            ? asset($staticImagePath)
+            : asset('storage/' . $product->gambar_url);
+        return $product;
+    });
+
+    return response()->json([
+        'success' => true,
+        'products' => $products
+    ]);
+}
 }
