@@ -1,7 +1,7 @@
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-left">
-            <thead class="bg-gray-50">
+            <thead class="bg-indigo-400 text-white">
                 <tr>
                     <th class="px-6 py-3">Gambar</th>
                     <th class="px-6 py-3">Nama Produk</th>
@@ -13,7 +13,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
                 @foreach($products as $product)
-                <tr class="hover:bg-gray-50">
+                <tr class="even:bg-gray-50 odd:bg-white hover:bg-gray-50">
                     <td class="px-6 py-4">
                         <img src="{{ asset('storage/' . $product->gambar_url) }}" 
                              alt="{{ $product->nama_produk }}" 
@@ -41,11 +41,11 @@
                     <td class="px-6 py-4">
                         <div class="flex gap-4">
                             <button onclick="openModal({{ $product->id }})" 
-                                class="text-blue-500 hover:text-blue-600">
+                                class="bg-blue-100 hover:bg-blue-200 p-2 rounded-lg text-blue-600 hover:text-blue-700 transition-colors duration-200 px-3 py-3">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button onclick="deleteProduct({{ $product->id }})" 
-                                    class="text-red-500 hover:text-red-600">
+                                    class="bg-red-100 hover:bg-red-200 p-2 rounded-lg text-red-600 hover:text-red-700 transition-colors duration-200 px-3 py-3">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>

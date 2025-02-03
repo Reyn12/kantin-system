@@ -160,19 +160,9 @@ class DatabaseSeeder extends Seeder
         $order2 = Order::create([
             'user_id' => $customer->id,
             'kasir_id' => $kasir2->id,
-            'total_harga' => 15000,
+            'total_harga' => 10000,
             'status' => 'menunggu_pembayaran',
             'nomor_meja' => 'B2',
-            'created_at' => now()
-        ]);
-
-        $order3 = Order::create([
-            'user_id' => $customer->id, 
-            'kasir_id' => $kasir->id,
-            'total_harga' => 25000,
-            'status' => 'diproses',
-            'nomor_meja' => 'C3',
-            'waktu_pembayaran' => now(),
             'created_at' => now()
         ]);
 

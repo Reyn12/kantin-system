@@ -47,7 +47,7 @@ class Order extends Model
     protected function totalHarga(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => 'Rp ' . number_format($value, 0, ',', '.')
+            get: fn ($value) => number_format($value, 0, ',', '.')
         );
     }
 

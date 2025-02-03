@@ -6,15 +6,20 @@
     @include('admin.components.header')
     
     {{-- Main Content --}}
-    {{-- Main Content --}}
     <div class="flex flex-col gap-6 px-4">
         {{-- Header Section --}}
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
             <h2 class="text-2xl font-bold">Manajemen Produk</h2>
-            <button onclick="openModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                <i class="fas fa-plus"></i>
-                Tambah Produk
-            </button>
+            <div class="flex flex-col sm:flex-row w-full md:w-auto gap-2">
+                <button onclick="openDownloadModal()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-download"></i>
+                    Download
+                </button>
+                <button onclick="openModal()" class="w-full md:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    Tambah Produk
+                </button>
+            </div>
         </div>
 
         {{-- Table Section --}}
@@ -23,6 +28,27 @@
 
     {{-- Add/Edit Product Modal --}}
     @include('admin.products.components.modal-add-edit')
+
+    {{-- Download Modal --}}
+    <div id="downloadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-[500px]">
+            <h3 class="text-xl font-bold mb-6 text-center">Download Data Produk</h3>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <button onclick="downloadFile('pdf')" class="bg-white border-2 border-red-500 hover:bg-red-50 text-red-500 p-4 rounded-lg flex flex-col items-center gap-3">
+                    <i class="fas fa-file-pdf text-4xl"></i>
+                    <span class="font-semibold">Download PDF</span>
+                </button>
+                <button onclick="downloadFile('excel')" class="bg-white border-2 border-green-500 hover:bg-green-50 text-green-500 p-4 rounded-lg flex flex-col items-center gap-3">
+                    <i class="fas fa-file-excel text-4xl"></i>
+                    <span class="font-semibold">Download Excel</span>
+                </button>
+            </div>
+            <button onclick="closeDownloadModal()" class="w-full bg-gray-100 hover:bg-gray-200 py-2 rounded-lg text-gray-600 font-medium">
+                Tutup
+            </button>
+        </div>
+    </div>
+
     @push('scripts')
     <script>
         // Function untuk update status
@@ -214,6 +240,27 @@
                     });
                 }
             });
+        }
+
+        // Function untuk handle modal download
+        function openDownloadModal() {
+            $('#downloadModal').removeClass('hidden').addClass('flex');
+        }
+
+        function closeDownloadModal() {
+            $('#downloadModal').removeClass('flex').addClass('hidden');
+        }
+
+        function downloadFile(type) {
+            let url = '';
+            if (type === 'pdf') {
+                url = '{{ route("admin.products.download.pdf") }}';
+            } else if (type === 'excel') {
+                url = '{{ route("admin.products.download.excel") }}';
+            }
+            
+            window.location.href = url;
+            closeDownloadModal();
         }
     </script>
     @endpush

@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\Category;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class AdminProductController extends Controller
 {
@@ -218,5 +222,17 @@ class AdminProductController extends Controller
             Log::error('Error saat update status: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function downloadPDF()
+    {
+        $products = Product::with('category')->get();
+        $pdf = PDF::loadView('admin.products.pdf', compact('products'));
+        return $pdf->download('products.pdf');
+    }
+
+    public function downloadExcel()
+    {
+        return Excel::download(new ProductsExport, 'products.xlsx');
     }
 }
