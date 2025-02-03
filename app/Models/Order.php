@@ -54,7 +54,7 @@ class Order extends Model
     // Helper method untuk update status
     public function updateStatus($status)
     {
-        if (in_array($status, ['menunggu_pembayaran', 'dibayar', 'selesai', 'dibatalkan'])) {
+        if (in_array($status, ['menunggu_pembayaran', 'dibayar','diproses', 'selesai', 'dibatalkan'])) {
             $this->update(['status' => $status]);
             
             if ($status === 'dibayar') {
