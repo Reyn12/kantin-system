@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminOrderController;
-use App\Http\Controllers\Admin\AdminUserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -53,16 +52,6 @@ Route::prefix('admin')->group(function () {
             Route::get('/{id}/edit', [AdminOrderController::class, 'edit']);
             Route::put('/{id}', [AdminOrderController::class, 'update']);
             Route::delete('/{id}', [AdminOrderController::class, 'destroy']);
-        });
-        
-        // Users Management Routes
-        Route::prefix('users')->group(function () {
-            Route::get('/', [AdminUserController::class, 'index'])->name('admin.users');
-            Route::get('/create', [AdminUserController::class, 'create'])->name('admin.users.create');
-            Route::post('/', [AdminUserController::class, 'store'])->name('admin.users.store');
-            Route::get('/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
-            Route::put('/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
-            Route::delete('/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
         });
     });
 });
