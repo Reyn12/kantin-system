@@ -208,7 +208,7 @@ function updateProducts(products) {
                     <h3 class="font-medium text-sm">${product.nama_produk}</h3>
                     <p class="text-gray-500 text-xs">${product.kategori || 'Main Course'}</p>
                     <div class="mt-2 flex justify-between items-center">
-                        <span class="font-semibold text-sm">Rp ${product.harga.toLocaleString()}</span>
+                        <span class="font-semibold text-sm">Rp ${Number(product.harga).toLocaleString('id-ID')}</span>
                         <button onclick="addToCart(${product.id}, '${product.nama_produk}')" 
                                 class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center hover:bg-orange-600">
                             <i class="fas fa-plus text-sm"></i>

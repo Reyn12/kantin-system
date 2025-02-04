@@ -56,18 +56,47 @@
 
         <!-- Back Button -->
         <div class="mt-8 text-center">
-            <a href="{{ route('order.menu') }}" class="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
+            <button onclick="handleBackToMenu()" 
+                    id="backButton"
+                    class="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
                 Kembali ke Menu
-            </a>
+            </button>
         </div>
 
         <!-- Scan Ulang Button -->
         <div class="mt-8">
-            <a href="{{ route('order.reset-table') }}" class="block w-full bg-orange-500 text-white text-center py-3 rounded-lg font-medium hover:bg-orange-600">
+            <button onclick="handleScanQR()"
+                    id="scanButton" 
+                    class="block w-full bg-orange-500 text-white text-center py-3 rounded-lg font-medium hover:bg-orange-600">
                 <i class="fas fa-qrcode mr-2"></i>
                 Scan QR Code Lagi
-            </a>
+            </button>
         </div>
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+function handleBackToMenu() {
+    const btn = document.getElementById('backButton');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+    
+    setTimeout(() => {
+        window.location.href = '{{ route('order.menu') }}';
+    }, 300);
+}
+
+function handleScanQR() {
+    const btn = document.getElementById('scanButton');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+    
+    setTimeout(() => {
+        window.location.href = '{{ route('order.reset-table') }}';
+    }, 300);
+}
+</script>
+@endpush
