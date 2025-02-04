@@ -6,7 +6,7 @@
         <!-- Status Header -->
         <div class="text-center mb-8">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Pesanan Diterima!</h1>
-            <p class="text-gray-600">Mohon tunggu pesananmu sedang diproses</p>
+            <p class="text-gray-600">Silahkan lakukan pembayaran di Kasir ya...</p>
             <p class="text-sm text-gray-500 mt-2">Kode Pesanan: #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</p>
         </div>
 
@@ -59,7 +59,7 @@
             <button onclick="handleBackToMenu()" 
                     id="backButton"
                     class="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
-                Kembali ke Menu
+                Pesan Lagi
             </button>
         </div>
 
