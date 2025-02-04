@@ -16,15 +16,7 @@ function getCategoryIcon($category) {
 @section('content')
 <div class="max-w-md container mx-auto px-4 py-8">
     
-    <!-- Toast Container -->
-    <div id="toast" class="fixed top-0 left-0 right-0 transform -translate-y-full transition-transform duration-300 ease-in-out z-50">
-        <div class="bg-black bg-opacity-80 text-white p-4 mx-4 mt-4 rounded-xl">
-            <div class="text-center">
-                <p class="font-medium mb-2" id="toastMessage">Produk berhasil ditambahkan ke keranjang!</p>
-                <button onclick="hideToast()" class="text-blue-400">Oke</button>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Header -->
     <div class="sticky top-0 z-50 bg-white shadow-sm">
@@ -43,6 +35,16 @@ function getCategoryIcon($category) {
                         <span id="cartCount" class="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center">0</span>
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast" class="fixed top-0 left-0 right-0 transform -translate-y-full transition-transform duration-300 ease-in-out z-50 lg:mx-[600px]">
+        <div class="bg-orange-500 text-white p-4 mx-4 mt-4 rounded-xl shadow-lg">
+            <div class="text-center">
+                <p class="font-medium mb-2" id="toastMessage">Produk berhasil ditambahkan ke keranjang!</p>
+                <button onclick="hideToast()" class="text-white hover:text-orange-200 transition-colors">Oke</button>
             </div>
         </div>
     </div>
@@ -190,6 +192,33 @@ function addToCart(productId) {
 
 function proceedToCheckout() {
     window.location.href = '{{ route('order.cart') }}';
+}
+
+function updateProducts(products) {
+    const productsGrid = document.querySelector('.grid');
+    productsGrid.innerHTML = '';
+    
+    products.forEach(product => {
+        const productHtml = `
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <img src="${product.image_url}" 
+                    alt="${product.nama_produk}"
+                    class="w-full h-32 object-cover">
+                <div class="p-3">
+                    <h3 class="font-medium text-sm">${product.nama_produk}</h3>
+                    <p class="text-gray-500 text-xs">${product.kategori || 'Main Course'}</p>
+                    <div class="mt-2 flex justify-between items-center">
+                        <span class="font-semibold text-sm">Rp ${product.harga.toLocaleString()}</span>
+                        <button onclick="addToCart(${product.id}, '${product.nama_produk}')" 
+                                class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center hover:bg-orange-600">
+                            <i class="fas fa-plus text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        productsGrid.insertAdjacentHTML('beforeend', productHtml);
+    });
 }
 
 function filterByCategory(categoryId) {
