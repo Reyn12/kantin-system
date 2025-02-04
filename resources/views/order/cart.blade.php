@@ -9,7 +9,7 @@
         $tableNumber = session('table_number');
         Log::info('Cart page - table number from session:', ['table_number' => $tableNumber]);
 @endphp
-<div class="container mx-auto px-4 py-8 min-h-screen">
+<div class="max-w-md container mx-auto px-4 py-8 min-h-screen bg-yellow-50">
     <!-- Header with back button -->
     <div class="flex items-center mb-6">
         <a href="{{ route('order.menu') }}" class="mr-4">
@@ -57,7 +57,7 @@
         </div>
 
         <!-- Fixed checkout bar at bottom -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t">
+        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t lg:mx-[700px] rounded-2xl lg:mb-10">
             <div class="container mx-auto px-4 py-4">
                 <div class="flex justify-between items-center mb-4">
                     <div>
@@ -65,13 +65,14 @@
                         <p class="text-xl font-bold">Rp {{ number_format($total, 0, ',', '.') }}</p>
                     </div>
                     <button onclick="showCheckoutModal()" 
+                            id="orderButton"
                             class="bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition">
                         Pesan Sekarang
                     </button>
                 </div>
             </div>
         </div>
-
+ 
         <!-- Checkout Modal -->
         <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
             <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
@@ -87,7 +88,7 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 mb-2">No. Telepon</label>
-                            <input type="tel" name="customer_phone" required
+                            <input type="number" name="customer_phone" required
                                    class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
                                    placeholder="Masukkan nomor telepon">
                         </div>
@@ -104,6 +105,7 @@
                                 Batal
                             </button>
                             <button type="submit"
+                                    id="confirmButton"
                                     class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
                                 Konfirmasi
                             </button>
@@ -128,6 +130,21 @@
 
 @push('scripts')
 <script>
+// Tambah event listener untuk form submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Show loading di tombol
+    const btn = document.getElementById('confirmButton');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    
+    // Submit form setelah delay dikit
+    setTimeout(() => {
+        this.submit();
+    }, 300);
+});
+
 function updateCart(productId, quantity) {
     if (quantity < 1) {
         removeFromCart(productId);
@@ -155,30 +172,66 @@ function updateCart(productId, quantity) {
 }
 
 function removeFromCart(productId) {
-    if (!confirm('Yakin ingin menghapus item ini?')) return;
-    
-    const formData = new FormData();
-    formData.append('product_id', productId);
-    formData.append('_token', '{{ csrf_token() }}');
+    Swal.fire({
+        title: 'Yakin hapus item ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('_token', '{{ csrf_token() }}');
 
-    fetch('{{ route('order.cart.remove') }}', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.reload();
+            fetch('{{ route('order.cart.remove') }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire(
+                        'Terhapus!',
+                        'Item berhasil dihapus dari keranjang.',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire(
+                    'Error!',
+                    'Gagal menghapus item.',
+                    'error'
+                );
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
     });
 }
 
 function showCheckoutModal() {
-    document.getElementById('checkoutModal').classList.remove('hidden');
-    document.getElementById('checkoutModal').classList.add('flex');
+    // Show loading dulu
+    const btn = document.getElementById('orderButton');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+    
+    // Delay 1 detik baru show modal
+    setTimeout(() => {
+        // Reset button state
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        
+        // Show modal
+        const modal = document.getElementById('checkoutModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }, 300);
 }
 
 function hideCheckoutModal() {

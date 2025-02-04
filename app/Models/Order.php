@@ -53,13 +53,6 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    // Accessor untuk format total harga
-    protected function totalHarga(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => number_format($value, 0, ',', '.')
-        );
-    }
 
     // Helper method untuk update status
     public function updateStatus($status)

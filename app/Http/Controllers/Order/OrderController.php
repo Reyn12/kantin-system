@@ -21,15 +21,20 @@ class OrderController extends Controller
     {
         Log::info('Table number received:', [
             'table_number' => $request->table_number,
+            'input_type' => $request->input_type,
             'all_data' => $request->all()
         ]);
 
         $request->validate([
-            'table_number' => 'required|string' // Terima semua format nomor meja
-
+            'table_number' => 'required|string',
+            'input_type' => 'nullable|string|in:manual,qr'
         ]);
 
-        session(['table_number' => $request->table_number]);
+        // Simpan data ke session
+        session([
+            'table_number' => $request->table_number,
+            'input_type' => $request->input_type ?? 'qr' // default ke qr kalo gak ada
+        ]);
 
         return response()->json([
             'success' => true,
@@ -70,8 +75,9 @@ class OrderController extends Controller
         foreach($order->items as $item) {
             $items[$item->product_id] = [
                 'name' => $item->product->nama,
-                'price' => $item->harga_satuan,
-                'quantity' => $item->jumlah
+                'price' => $item->harga_satuan * 1000,
+                'quantity' => $item->jumlah,
+                'subtotal' => ($item->harga_satuan * 1000) * $item->jumlah
             ];
         }
 
@@ -106,6 +112,13 @@ class OrderController extends Controller
             'success' => true,
             'products' => $products
         ]);
+        
+    }
+
+    public function resetTable()
+    {
+        session()->forget('table_number');
+        return redirect()->route('order.index');
     }
 
 }

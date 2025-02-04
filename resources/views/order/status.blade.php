@@ -6,7 +6,7 @@
         <!-- Status Header -->
         <div class="text-center mb-8">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Pesanan Diterima!</h1>
-            <p class="text-gray-600">Mohon tunggu pesananmu sedang diproses</p>
+            <p class="text-gray-600">Silahkan lakukan pembayaran di Kasir ya...</p>
             <p class="text-sm text-gray-500 mt-2">Kode Pesanan: #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</p>
         </div>
 
@@ -40,7 +40,7 @@
                         <p class="font-medium">{{ $item['name'] }}</p>
                         <p class="text-sm text-gray-600">{{ $item['quantity'] }}x @ Rp {{ number_format($item['price'], 0, ',', '.') }}</p>
                     </div>
-                    <p class="font-medium">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                    <p class="font-medium">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</p>
                 </div>
                 @endforeach
             </div>
@@ -56,10 +56,47 @@
 
         <!-- Back Button -->
         <div class="mt-8 text-center">
-            <a href="{{ route('order.menu') }}" class="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
-                Kembali ke Menu
-            </a>
+            <button onclick="handleBackToMenu()" 
+                    id="backButton"
+                    class="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
+                Pesan Lagi
+            </button>
+        </div>
+
+        <!-- Scan Ulang Button -->
+        <div class="mt-8">
+            <button onclick="handleScanQR()"
+                    id="scanButton" 
+                    class="block w-full bg-orange-500 text-white text-center py-3 rounded-lg font-medium hover:bg-orange-600">
+                <i class="fas fa-qrcode mr-2"></i>
+                Scan QR Code Lagi
+            </button>
         </div>
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+function handleBackToMenu() {
+    const btn = document.getElementById('backButton');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+    
+    setTimeout(() => {
+        window.location.href = '{{ route('order.menu') }}';
+    }, 300);
+}
+
+function handleScanQR() {
+    const btn = document.getElementById('scanButton');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+    
+    setTimeout(() => {
+        window.location.href = '{{ route('order.reset-table') }}';
+    }, 300);
+}
+</script>
+@endpush
