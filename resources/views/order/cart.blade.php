@@ -9,7 +9,7 @@
         $tableNumber = session('table_number');
         Log::info('Cart page - table number from session:', ['table_number' => $tableNumber]);
 @endphp
-<div class="container mx-auto px-4 py-8 min-h-screen">
+<div class="max-w-md container mx-auto px-4 py-8 min-h-screen bg-yellow-50">
     <!-- Header with back button -->
     <div class="flex items-center mb-6">
         <a href="{{ route('order.menu') }}" class="mr-4">
@@ -57,7 +57,7 @@
         </div>
 
         <!-- Fixed checkout bar at bottom -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t">
+        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t lg:mx-[700px] rounded-2xl lg:mb-10">
             <div class="container mx-auto px-4 py-4">
                 <div class="flex justify-between items-center mb-4">
                     <div>
@@ -155,24 +155,45 @@ function updateCart(productId, quantity) {
 }
 
 function removeFromCart(productId) {
-    if (!confirm('Yakin ingin menghapus item ini?')) return;
-    
-    const formData = new FormData();
-    formData.append('product_id', productId);
-    formData.append('_token', '{{ csrf_token() }}');
+    Swal.fire({
+        title: 'Yakin hapus item ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('_token', '{{ csrf_token() }}');
 
-    fetch('{{ route('order.cart.remove') }}', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.reload();
+            fetch('{{ route('order.cart.remove') }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire(
+                        'Terhapus!',
+                        'Item berhasil dihapus dari keranjang.',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire(
+                    'Error!',
+                    'Gagal menghapus item.',
+                    'error'
+                );
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
     });
 }
 

@@ -14,7 +14,7 @@ function getCategoryIcon($category) {
 }
 @endphp
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="max-w-md container mx-auto px-4 py-8">
     
     <!-- Toast Container -->
     <div id="toast" class="fixed top-0 left-0 right-0 transform -translate-y-full transition-transform duration-300 ease-in-out z-50">
@@ -99,7 +99,7 @@ function getCategoryIcon($category) {
 </div>
 
 <!-- Selected Items Bar -->
-<div id="selectedItemsBar" class="fixed bottom-10 left-10 right-10 bg-white shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out rounded-2xl">
+<div id="selectedItemsBar" class="fixed bottom-10 lg:bottom-10 left-10 right-10 bg-white shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out rounded-2xl lg:mx-96">
     <div class="container mx-auto px-4 py-3">
         <div class="flex justify-between items-center">
             <div class="text-sm">
