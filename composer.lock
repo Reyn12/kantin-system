@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f92407005198a766b9f876accc348c8c",
+    "content-hash": "d64675c7f51b941c6ee93305d8cd381f",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -142,6 +142,63 @@
                 }
             ],
             "time": "2023-11-29T23:19:16+00:00"
+        },
+        {
+            "name": "brick/money",
+            "version": "0.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/money.git",
+                "reference": "08b0198a05c6eeac416486da053cbdc02ddff56c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/money/zipball/08b0198a05c6eeac416486da053cbdc02ddff56c",
+                "reference": "08b0198a05c6eeac416486da053cbdc02ddff56c",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.12.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "brick/varexporter": "~0.4.0",
+                "ext-dom": "*",
+                "ext-pdo": "*",
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^10.1",
+                "vimeo/psalm": "5.26.1"
+            },
+            "suggest": {
+                "ext-intl": "Required to format Money objects"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Money\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Money and currency library",
+            "keywords": [
+                "brick",
+                "currency",
+                "money"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/money/issues",
+                "source": "https://github.com/brick/money/tree/0.10.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-10-12T21:33:29+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -903,6 +960,81 @@
             "time": "2024-12-27T00:36:43+00:00"
         },
         {
+            "name": "elegantly/laravel-money",
+            "version": "v2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ElegantEngineeringTech/laravel-money.git",
+                "reference": "ac1f05527d906da394310c530057ee5906d413ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ElegantEngineeringTech/laravel-money/zipball/ac1f05527d906da394310c530057ee5906d413ab",
+                "reference": "ac1f05527d906da394310c530057ee5906d413ab",
+                "shasum": ""
+            },
+            "require": {
+                "brick/money": "^0.10.0",
+                "illuminate/contracts": "^10.0|^11.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.13.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0.0",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.8|^8.1",
+                "orchestra/testbench": "^8.8|^9.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Elegantly\\Money\\MoneyServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Elegantly\\Money\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Quentin Gabriele",
+                    "email": "quentin.gabriele@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Use Brick/Money in your Laravel app",
+            "homepage": "https://github.com/ElegantEngineeringTech/laravel-money",
+            "keywords": [
+                "Elegantly",
+                "laravel",
+                "laravel-money",
+                "money"
+            ],
+            "support": {
+                "issues": "https://github.com/ElegantEngineeringTech/laravel-money/issues",
+                "source": "https://github.com/ElegantEngineeringTech/laravel-money/tree/v2.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ElegantEngineeringTech",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-01-03T12:44:57+00:00"
+        },
+        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.18.0",
             "source": {
@@ -962,6 +1094,81 @@
                 "source": "https://github.com/ezyang/htmlpurifier/tree/v4.18.0"
             },
             "time": "2024-11-01T03:51:45+00:00"
+        },
+        {
+            "name": "finller/laravel-invoices",
+            "version": "v3.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/finller/laravel-invoices.git",
+                "reference": "f8a4dd20846d0f4bb6ba790810fcba833e54dd09"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/finller/laravel-invoices/zipball/f8a4dd20846d0f4bb6ba790810fcba833e54dd09",
+                "reference": "f8a4dd20846d0f4bb6ba790810fcba833e54dd09",
+                "shasum": ""
+            },
+            "require": {
+                "barryvdh/laravel-dompdf": "^3.0.0",
+                "elegantly/laravel-money": "^2.1.0",
+                "illuminate/contracts": "^11.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.14"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0.0",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^8.1",
+                "orchestra/testbench": "^9.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-arch": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Invoice": "Finller\\Invoice\\Facades\\Invoice"
+                    },
+                    "providers": [
+                        "Finller\\Invoice\\InvoiceServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Finller\\Invoice\\": "src",
+                    "Finller\\Invoice\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Quentin Gabriele",
+                    "email": "quentin.gabriele@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Store invoices safely in your Laravel application",
+            "homepage": "https://github.com/finller/laravel-invoices",
+            "keywords": [
+                "finller",
+                "invoices",
+                "laravel",
+                "laravel-invoices"
+            ],
+            "support": {
+                "issues": "https://github.com/finller/laravel-invoices/issues",
+                "source": "https://github.com/finller/laravel-invoices/tree/v3.5.2"
+            },
+            "time": "2025-01-22T14:52:47+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -4319,6 +4526,66 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v8.7.0"
             },
             "time": "2024-10-27T17:38:32+00:00"
+        },
+        {
+            "name": "spatie/laravel-package-tools",
+            "version": "1.18.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-package-tools.git",
+                "reference": "ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78",
+                "reference": "ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^9.28|^10.0|^11.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5",
+                "orchestra/testbench": "^7.7|^8.0|^9.0",
+                "pestphp/pest": "^1.22|^2",
+                "phpunit/phpunit": "^9.5.24|^10.5",
+                "spatie/pest-plugin-test-time": "^1.1|^2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\LaravelPackageTools\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Tools for creating Laravel packages",
+            "homepage": "https://github.com/spatie/laravel-package-tools",
+            "keywords": [
+                "laravel-package-tools",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-package-tools/issues",
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.18.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-01-22T08:51:18+00:00"
         },
         {
             "name": "symfony/clock",
@@ -10036,12 +10303,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
