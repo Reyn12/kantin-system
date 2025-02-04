@@ -40,7 +40,7 @@
                         <p class="font-medium">{{ $item['name'] }}</p>
                         <p class="text-sm text-gray-600">{{ $item['quantity'] }}x @ Rp {{ number_format($item['price'], 0, ',', '.') }}</p>
                     </div>
-                    <p class="font-medium">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                    <p class="font-medium">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</p>
                 </div>
                 @endforeach
             </div>
@@ -58,6 +58,14 @@
         <div class="mt-8 text-center">
             <a href="{{ route('order.menu') }}" class="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
                 Kembali ke Menu
+            </a>
+        </div>
+
+        <!-- Scan Ulang Button -->
+        <div class="mt-8">
+            <a href="{{ route('order.reset-table') }}" class="block w-full bg-orange-500 text-white text-center py-3 rounded-lg font-medium hover:bg-orange-600">
+                <i class="fas fa-qrcode mr-2"></i>
+                Scan QR Code Lagi
             </a>
         </div>
     </div>

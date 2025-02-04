@@ -70,8 +70,9 @@ class OrderController extends Controller
         foreach($order->items as $item) {
             $items[$item->product_id] = [
                 'name' => $item->product->nama,
-                'price' => $item->harga_satuan,
-                'quantity' => $item->jumlah
+                'price' => $item->harga_satuan * 1000,
+                'quantity' => $item->jumlah,
+                'subtotal' => ($item->harga_satuan * 1000) * $item->jumlah
             ];
         }
 
@@ -106,6 +107,13 @@ class OrderController extends Controller
             'success' => true,
             'products' => $products
         ]);
+        
+    }
+
+    public function resetTable()
+    {
+        session()->forget('table_number');
+        return redirect()->route('order.index');
     }
 
 }

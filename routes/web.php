@@ -66,6 +66,9 @@ Route::prefix('order')->name('order.')->group(function () {
     // Submit nomor meja
     Route::post('/table', [App\Http\Controllers\Order\OrderController::class, 'setTable'])->name('set-table');
     
+    // Reset table number
+    Route::get('/reset-table', [App\Http\Controllers\Order\OrderController::class, 'resetTable'])->name('reset-table');
+
     // Halaman menu (perlu middleware cek nomor meja)
     Route::middleware([CheckTableNumber::class])->group(function () {
         Route::get('/menu', [App\Http\Controllers\Order\OrderController::class, 'menu'])->name('menu');
