@@ -58,6 +58,27 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+// Kasir Routes
+Route::prefix('kasir')->name('kasir.')->group(function () {
+    Route::get('login', [App\Http\Controllers\Kasir\KasirAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [App\Http\Controllers\Kasir\KasirAuthController::class, 'login']);
+    Route::post('logout', [App\Http\Controllers\Kasir\KasirAuthController::class, 'logout'])->name('logout');
+
+    Route::middleware([App\Http\Middleware\KasirMiddleware::class])->group(function () {
+        Route::get('dashboard', [App\Http\Controllers\Kasir\KasirDashboardController::class, 'index'])->name('dashboard');
+        Route::get('orders', [App\Http\Controllers\Kasir\OrderController::class, 'index'])->name('orders');
+        
+        // Order Routes
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Kasir\OrderController::class, 'index'])->name('index');
+            Route::get('/{id}/edit', [App\Http\Controllers\Kasir\OrderController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\Kasir\OrderController::class, 'update'])->name('update');
+            // Invoice print
+            Route::get('/{id}/invoice', [App\Http\Controllers\Kasir\OrderController::class, 'invoice'])->name('invoice');
+        });
+    });
+});
+
 // Order Routes
 Route::prefix('order')->name('order.')->group(function () {
     // Halaman scan QR/input meja
