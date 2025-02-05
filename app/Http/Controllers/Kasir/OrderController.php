@@ -11,6 +11,8 @@ use Finller\Invoice\InvoiceItem;
 use Finller\Invoice\InvoiceState;
 use Finller\Invoice\InvoiceType;
 use Brick\Money\Money;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class OrderController extends Controller
@@ -23,7 +25,7 @@ class OrderController extends Controller
             // Cari order berdasarkan nomor meja dan mencari menggunakan LIKE
             $orders = Order::where('nomor_meja', 'like', '%' . $tableNumber . '%')->get();
         } else {
-            $orders = Order::where('kasir_id', auth()->user()->id)->get();
+            $orders = Order::where('kasir_id', Auth::user()->id)->get();
         }
 
         // Filter tanggal
@@ -79,7 +81,7 @@ class OrderController extends Controller
             ]);
 
             $order = Order::findOrFail($id);
-            if ($order->kasir_id && $order->kasir_id !== auth()->user()->id) {
+            if ($order->kasir_id && $order->kasir_id !== Auth::user()->id) {
                 return response()->json([
                     'message' => 'Order tidak dapat diedit oleh kasir lain'
                 ], 403);
@@ -94,7 +96,7 @@ class OrderController extends Controller
             }
 
             if  ($request->status === 'dibayar') {
-                $order->kasir_id = auth()->user()->id;
+                $order->kasir_id = Auth::user()->id;
 
                 if (!$invoice) {
                     $invoice = new Invoice([
@@ -107,9 +109,9 @@ class OrderController extends Controller
                             'email' => $order->customer->email,
                         ],
                         'seller_information' => [
-                            'name' => auth()->user()->name,
+                            'name' => Auth::user()->name,
                             'address' => null,
-                            'email' => auth()->user()->email,
+                            'email' => Auth::user()->email,
                         ],
                         'created_at' => $order->created_at,
                     ]);
@@ -120,10 +122,10 @@ class OrderController extends Controller
                     $invoice->items()->saveMany(
                         $order->orderItems->map(function ($orderItem) {
                             return new InvoiceItem([
-                                'label' => $item->product->nama_produk,
-                                'unit_price' => Money::of($item->product->harga, 'IDR'),
-                                'quantity' => $item->subtotal,
-                                'description' => $item->product->deskripsi,
+                                'label' => $orderItem->product->nama_produk,
+                                'unit_price' => Money::of($orderItem->product->harga, 'IDR'),
+                                'quantity' => $orderItem->subtotal,
+                                'description' => $orderItem->product->deskripsi,
                                 'currency' => 'IDR',
                             ]);
                     }));
@@ -188,9 +190,9 @@ class OrderController extends Controller
                 'email' => $order->customer->email,
             ],
             'seller_information' => [
-                'name' => auth()->user()->name,
+                'name' => Auth::user()->name,
                 'address' => null,
-                'email' => auth()->user()->email,
+                'email' => Auth::user()->email,
             ],
             'created_at' => $order->created_at,
         ]);

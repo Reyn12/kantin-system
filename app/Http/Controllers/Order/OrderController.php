@@ -8,6 +8,12 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
+use Finller\Invoice\Invoice;
+use Finller\Invoice\InvoiceItem;
+use Finller\Invoice\InvoiceState;
+use Finller\Invoice\InvoiceType;
+use Brick\Money\Money;
+
 
 
 class OrderController extends Controller
@@ -119,6 +125,49 @@ class OrderController extends Controller
     {
         session()->forget('table_number');
         return redirect()->route('order.index');
+    }
+
+    public function downloadInvoice(Order $order)
+    {
+        $invoice = Invoice::where('invoiceable_id', $order->id)
+                         ->where('invoiceable_type', Order::class)
+                         ->first();
+
+        if ($invoice) {
+            return $invoice->toPdfInvoice()->download();
+        }
+
+        $invoice = new Invoice([
+            'type' => InvoiceType::Invoice,
+            'state' => InvoiceState::Pending,
+            'description' => 'Invoice Meja ' . session('table_number') . ' untuk ' . session('customer_name') . ' pada ' . now()->format('d F Y'),
+            'buyer_information' => [
+                'name' => session('customer_name'),
+                'address' => 'Meja #' . session('table_number'),
+                'phone' => session('customer_phone')
+            ],
+            'seller_information' => [
+                'name' => 'Kantin System',
+                'address' => 'Jalan Contoh No. 123',
+                'phone' => '08123456789'
+            ],
+            'created_at' => now(),
+        ]);
+
+        $invoice->invoiceable()->associate($order);
+        $invoice->save();
+
+        // Add items
+        foreach (session('cart', []) as $id => $item) {
+            $invoice->items()->create([
+                'label' => $item['name'],
+                'unit_price' => Money::of($item['price'], 'IDR'),
+                'quantity' => $item['quantity'],
+                'currency' => 'IDR',
+            ]);
+        }
+
+        return $invoice->toPdfInvoice()->download();
     }
 
 }

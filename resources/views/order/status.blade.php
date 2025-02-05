@@ -46,6 +46,14 @@
             </div>
         </div>
 
+        <!-- Download Invoice Button -->
+        <div class="mt-4 text-center">
+            <a href="{{ route('order.download-invoice', $order->id) }}" 
+               class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                <i class="fas fa-download mr-2"></i>Download Invoice
+            </a>
+        </div>
+
         <!-- Total -->
         <div class="border-t pt-4">
             <div class="flex justify-between items-center text-lg font-bold">
