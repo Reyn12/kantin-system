@@ -37,24 +37,27 @@ class Order extends Model
         return $this->belongsTo(User::class, 'kasir_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     // Relasi ke order items
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    // Accessor untuk format total harga
-    protected function totalHarga(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => 'Rp ' . number_format($value, 0, ',', '.')
-        );
-    }
 
     // Helper method untuk update status
     public function updateStatus($status)
     {
-        if (in_array($status, ['menunggu_pembayaran', 'dibayar', 'selesai', 'dibatalkan'])) {
+        if (in_array($status, ['menunggu_pembayaran', 'dibayar','diproses', 'selesai', 'dibatalkan'])) {
             $this->update(['status' => $status]);
             
             if ($status === 'dibayar') {
