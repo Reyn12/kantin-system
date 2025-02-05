@@ -5,14 +5,6 @@
     
     {{-- Main Content --}}
     <div class="flex flex-col gap-6 px-4">
-        {{-- Header Section --}}
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Daftar Order</h1>
-                <p class="text-sm text-gray-600">Kelola semua order pelanggan disini</p>
-            </div>
-        </div>
-
         <!-- Cari nomor meja -->
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
             <div>
@@ -39,10 +31,10 @@
             <div class="flex flex-col sm:flex-row w-full md:w-auto gap-2">
                 <form action="{{ route('kasir.orders.index') }}" method="GET">
                     <div class="flex items-center">
-                        <label for="start_date" class="block text-sm font-medium text-gray-700">Dari Tanggal</label>
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 mr-4">Dari Tanggal</label>
                         <input value="{{ request('start_date') }}" type="date" name="start_date" id="start_date" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600">
 
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 ml-4">Sampai Tanggal</label>
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 ml-4 mr-4">Sampai Tanggal</label>
                         <input value="{{ request('end_date') }}" type="date" name="end_date" id="end_date" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600">
                         <button type="submit" class="ml-2 bg-indigo-600 text-white rounded-lg px-4 py-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600">
                             Filter
@@ -271,72 +263,93 @@
     function closeModal() {
         $('#orderModal').removeClass('flex').addClass('hidden');
     }
-
+ 
     function updateStatus(id) {
-        Swal.fire({
-            title: '<h3 class="text-xl font-bold text-gray-900">Update Status Order</h3>',
-            html: `
-                <div class="space-y-4">
-                    <select id="status-select" class="w-full px-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        <option value="menunggu_pembayaran" class="flex items-center">
-                            <span class="inline-block w-2 h-2 mr-2 bg-yellow-400 rounded-full"></span>
-                            Menunggu Pembayaran
-                        </option>
-                        <option value="dibayar" class="flex items-center">
-                            <span class="inline-block w-2 h-2 mr-2 bg-blue-400 rounded-full"></span>
-                            Dibayar
-                        </option>
-                        <option value="diproses" class="flex items-center">
-                            <span class="inline-block w-2 h-2 mr-2 bg-purple-400 rounded-full"></span>
-                            Diproses
-                        </option>
-                        <option value="selesai" class="flex items-center">
-                            <span class="inline-block w-2 h-2 mr-2 bg-green-400 rounded-full"></span>
-                            Selesai
-                        </option>
-                        <option value="dibatalkan" class="flex items-center">
-                            <span class="inline-block w-2 h-2 mr-2 bg-red-400 rounded-full"></span>
-                            Dibatalkan
-                        </option>
-                    </select>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Update',
-            cancelButtonText: 'Batal',
-            customClass: {
-                confirmButton: 'px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md',
-                cancelButton: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md ml-3'
-            },
-            preConfirm: () => {
-                const status = document.getElementById('status-select').value;
-                return $.ajax({
-                    url: `/kasir/orders/${id}`,
-                    type: 'PUT',
-                    data: {
-                        status: status,
-                        _token: '{{ csrf_token() }}'
-                    }
-                });
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
+        // Get current status first
+        $.get(`/kasir/orders/${id}/edit`, function(order) {
+            Swal.fire({
+                title: '<h3 class="text-xl font-bold text-gray-900">Update Status Order</h3>',
+                html: `
+                    <div class="space-y-4">
+                        <select id="status-select" class="w-full px-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="menunggu_pembayaran" ${order.status === 'menunggu_pembayaran' ? 'selected' : ''}>
+                                Menunggu Pembayaran
+                            </option>
+                            <option value="dibayar" ${order.status === 'dibayar' ? 'selected' : ''}>
+                                Dibayar
+                            </option>
+                            <option value="diproses" ${order.status === 'diproses' ? 'selected' : ''}>
+                                Diproses
+                            </option>
+                            <option value="selesai" ${order.status === 'selesai' ? 'selected' : ''}>
+                                Selesai
+                            </option>
+                            <option value="dibatalkan" ${order.status === 'dibatalkan' ? 'selected' : ''}>
+                                Dibatalkan
+                            </option>
+                        </select>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Update',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md',
+                    cancelButton: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-md ml-3'
+                },
+                preConfirm: () => {
+                    const status = document.getElementById('status-select').value;
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: `/kasir/orders/${id}`,
+                            type: 'POST',
+                            data: {
+                                _method: 'PUT',
+                                status: status,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                resolve(response);
+                            },
+                            error: function(xhr) {
+                                reject(xhr.responseJSON?.message || 'Terjadi kesalahan saat update status');
+                            }
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Status order berhasil diupdate',
+                        icon: 'success',
+                        customClass: {
+                            confirmButton: 'px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md'
+                        }
+                    }).then(() => location.reload());
+                }
+            }).catch((error) => {
                 Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'Status order berhasil diupdate',
-                    icon: 'success',
+                    icon: 'error',
+                    title: 'Update Gagal!',
+                    text: error,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
                     customClass: {
                         confirmButton: 'px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md'
                     }
-                }).then(() => location.reload());
-            }
-        }).catch((error) => {
+                });
+            });
+        }).fail(function(xhr) {
             Swal.fire({
                 icon: 'error',
-                title: 'Update Gagal!',
-                text: 'Status order gagal diupdate\n\n' + error.responseJSON.message,
-                showConfirmButton: false,
-                timer: 1500
+                title: 'Gagal Mengambil Data!',
+                text: xhr.responseJSON?.message || 'Terjadi kesalahan saat mengambil data order',
+                showConfirmButton: true,
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md'
+                }
             });
         });
     }
