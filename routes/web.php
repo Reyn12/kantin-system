@@ -10,6 +10,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Middleware\CheckTableNumber;
+use App\Http\Controllers\Order\OrderController;
 
 
 Route::get('/', function () {
@@ -87,6 +88,9 @@ Route::prefix('order')->name('order.')->group(function () {
     // Submit nomor meja
     Route::post('/table', [App\Http\Controllers\Order\OrderController::class, 'setTable'])->name('set-table');
     
+    Route::get('download-invoice/{order}', [App\Http\Controllers\Order\OrderController::class, 'downloadInvoice'])->name('download-invoice');
+
+
     // Reset table number
     Route::get('/reset-table', [App\Http\Controllers\Order\OrderController::class, 'resetTable'])->name('reset-table');
 

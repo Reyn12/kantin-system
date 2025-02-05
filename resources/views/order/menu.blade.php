@@ -101,7 +101,7 @@ function getCategoryIcon($category) {
 </div>
 
 <!-- Selected Items Bar -->
-<div id="selectedItemsBar" class="fixed bottom-10 lg:bottom-10 left-10 right-10 bg-white shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out rounded-2xl lg:mx-96">
+<div id="selectedItemsBar" class="fixed bottom-10 lg:bottom-10 left-10 right-10 bg-white shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out rounded-2xl lg:mx-[800px]">
     <div class="container mx-auto px-4 py-3">
         <div class="flex justify-between items-center">
             <div class="text-sm">
@@ -110,8 +110,11 @@ function getCategoryIcon($category) {
             <div class="text-orange-500 font-semibold" id="totalPrice">
                 Rp 0
             </div>
-            <button onclick="proceedToCheckout()" class="bg-orange-500 text-white px-4 py-2 rounded-lg">
-                Checkout
+            <button onclick="proceedToCheckout()" class="bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                <span id="checkoutText">Checkout</span>
+                <div id="loadingSpinner" class="hidden">
+                    <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
             </button>
         </div>
     </div>
@@ -189,9 +192,21 @@ function addToCart(productId) {
         showToast('Terjadi kesalahan saat menambahkan ke keranjang');
     });
 }
-
+ 
 function proceedToCheckout() {
-    window.location.href = '{{ route('order.cart') }}';
+    const button = document.querySelector('button');
+    const checkoutText = document.getElementById('checkoutText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Disable button dan show loading
+    button.disabled = true;
+    checkoutText.textContent = 'Processing...';
+    loadingSpinner.classList.remove('hidden');
+    
+    // Kasih delay dikit buat loading animation (500ms)
+    setTimeout(() => {
+        window.location.href = '{{ route('order.cart') }}';
+    }, 300);
 }
 
 function updateProducts(products) {

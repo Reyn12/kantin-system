@@ -11,6 +11,8 @@ use Finller\Invoice\InvoiceItem;
 use Finller\Invoice\InvoiceState;
 use Finller\Invoice\InvoiceType;
 use Brick\Money\Money;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class OrderController extends Controller
@@ -23,7 +25,7 @@ class OrderController extends Controller
             // Cari order berdasarkan nomor meja dan mencari menggunakan LIKE
             $orders = Order::where('nomor_meja', 'like', '%' . $tableNumber . '%')->get();
         } else {
-            $orders = Order::where('kasir_id', auth()->user()->id)->get();
+            $orders = Order::where('kasir_id', Auth::user()->id)->get();
         }
 
         // Filter tanggal
@@ -74,28 +76,42 @@ class OrderController extends Controller
 
     public function update(Request $request, $id) {
         try {
+            // Kalo dari dashboard, status nya otomatis diproses
+            if (!$request->has('status')) {
+                $request->merge(['status' => 'diproses']);
+            }
+
             $request->validate([
                 'status' => 'required|in:menunggu_pembayaran,dibayar,diproses,selesai,dibatalkan'
             ]);
 
             $order = Order::findOrFail($id);
-            if ($order->kasir_id && $order->kasir_id !== auth()->user()->id) {
-                return response()->json([
-                    'message' => 'Order tidak dapat diedit oleh kasir lain'
-                ], 403);
+            if ($order->kasir_id && $order->kasir_id !== Auth::user()->id) {
+                if ($request->wantsJson()) {
+                    return response()->json([
+                        'message' => 'Order tidak dapat diedit oleh kasir lain'
+                    ], 403);
+                }
+                return redirect()->back()->with('error', 'Order tidak dapat diedit oleh kasir lain');
             }
 
             $invoice = Invoice::where('invoiceable_id', $order->id)->first();
 
             if ($request->status === 'dibayar' && $order->status === 'dibayar') {
-                return response()->json([
-                    'message' => 'Order sudah dibayar',
-                ], 400);
+                if ($request->wantsJson()) {
+                    return response()->json([
+                        'message' => 'Order sudah dibayar',
+                    ], 400);
+                }
+                return redirect()->back()->with('error', 'Order sudah dibayar');
             }
 
-            if  ($request->status === 'dibayar') {
-                $order->kasir_id = auth()->user()->id;
+            // Set kasir_id ketika status berubah jadi diproses atau dibayar
+            if (in_array($request->status, ['diproses', 'dibayar'])) {
+                $order->kasir_id = Auth::user()->id;
+            }
 
+            if ($request->status === 'dibayar') {
                 if (!$invoice) {
                     $invoice = new Invoice([
                         'type' => InvoiceType::Invoice,
@@ -107,9 +123,9 @@ class OrderController extends Controller
                             'email' => $order->customer->email,
                         ],
                         'seller_information' => [
-                            'name' => auth()->user()->name,
+                            'name' => Auth::user()->name,
                             'address' => null,
-                            'email' => auth()->user()->email,
+                            'email' => Auth::user()->email,
                         ],
                         'created_at' => $order->created_at,
                     ]);
@@ -120,10 +136,10 @@ class OrderController extends Controller
                     $invoice->items()->saveMany(
                         $order->orderItems->map(function ($orderItem) {
                             return new InvoiceItem([
-                                'label' => $item->product->nama_produk,
-                                'unit_price' => Money::of($item->product->harga, 'IDR'),
-                                'quantity' => $item->subtotal,
-                                'description' => $item->product->deskripsi,
+                                'label' => $orderItem->product->nama_produk,
+                                'unit_price' => Money::of($orderItem->product->harga, 'IDR'),
+                                'quantity' => $orderItem->subtotal,
+                                'description' => $orderItem->product->deskripsi,
                                 'currency' => 'IDR',
                             ]);
                     }));
@@ -132,24 +148,30 @@ class OrderController extends Controller
                 }
 
                 $invoice->state = InvoiceState::Paid;
-
             }
 
-            if ($request->status === 'dibatalkan') {
+            if ($request->status === 'dibatalkan' && $invoice) {
                 $invoice->state = InvoiceState::Refunded;
+                $invoice->save();
             }
 
-            $order->updateStatus($request->status);
+            $order->status = $request->status;
             $order->save();
 
-            return response()->json([
-                'message' => 'Status order berhasil diperbarui'
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Status order berhasil diperbarui'
+                ]);
+            }
+            return redirect()->back()->with('success', 'Status order berhasil diperbarui');
+
         } catch (\Exception $e) {
-            // Log::error('Error saat memperbarui status order: ' . $e->getMessage());
-            return response()->json([
-                'message' => 'Terjadi kesalahan saat memperbarui status order' . $e->getMessage(),
-            ], 500);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Terjadi kesalahan saat memperbarui status order: ' . $e->getMessage(),
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui status order: ' . $e->getMessage());
         }
     }
 
@@ -188,9 +210,9 @@ class OrderController extends Controller
                 'email' => $order->customer->email,
             ],
             'seller_information' => [
-                'name' => auth()->user()->name,
+                'name' => Auth::user()->name,
                 'address' => null,
-                'email' => auth()->user()->email,
+                'email' => Auth::user()->email,
             ],
             'created_at' => $order->created_at,
         ]);

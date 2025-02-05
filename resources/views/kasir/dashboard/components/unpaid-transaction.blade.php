@@ -60,9 +60,12 @@
                                     </span>
                             @endswitch
                         </td>
-                        <td>{{ $t['tanggal']->format('d M Y, H:i') }}</td>
+                        <td>{{ $t['tanggal'] ? $t['tanggal']->format('d M Y, H:i') : '-' }}</td>
                         <td>{{ $t['customer'] }}</td>
                         <td>
+                            <button onclick="updateStatus({{ $t['id'] }})" class="bg-green-100 hover:bg-green-200 p-2 rounded-lg text-green-600 hover:text-green-700 transition-colors duration-200 px-3 py-3">
+                                <i class="fas fa-check"></i>
+                            </button>
                             <a href="{{ route('kasir.orders.invoice', ['id' => $t['id']]) }}" target="_blank">
                                 <button class="bg-blue-100 hover:bg-blue-200 p-2 rounded-lg text-blue-600 hover:text-blue-700 transition-colors duration-200 px-3 py-3">
                                     <i class="fas fa-print"></i>
@@ -81,3 +84,43 @@
         </table>
     </div>
 </div>
+
+{{-- Modal Konfirmasi --}}
+<div id="updateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Update Status Pesanan</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    Apakah kamu yakin ingin mengubah status pesanan ini menjadi "Diproses"?
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <form id="updateForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
+                        Ya, Proses Pesanan
+                    </button>
+                </form>
+                <button onclick="closeModal()" class="mt-3 px-4 py-2 bg-gray-100 text-gray-700 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@push('scripts')
+<script>
+    function updateStatus(orderId) {
+        // Set form action
+        document.getElementById('updateForm').action = `/kasir/orders/${orderId}`;
+        // Show modal
+        document.getElementById('updateModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('updateModal').classList.add('hidden');
+    }
+</script>
+@endpush
