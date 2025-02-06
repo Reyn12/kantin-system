@@ -101,7 +101,7 @@ function getCategoryIcon($category) {
 </div>
 
 <!-- Selected Items Bar -->
-<div id="selectedItemsBar" class="fixed bottom-10 lg:bottom-10 left-10 right-10 bg-white shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out rounded-2xl lg:mx-[800px]">
+<div id="selectedItemsBar" class="fixed bottom-10 lg:bottom-10 left-10 right-10 bg-white shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out rounded-2xl lg:mx-[500px]">
     <div class="container mx-auto px-4 py-3">
         <div class="flex justify-between items-center">
             <div class="text-sm">
@@ -124,6 +124,11 @@ function getCategoryIcon($category) {
 <script>
 let cartItems = [];
 let totalPrice = 0;
+
+// Panggil updateSelectedItemsBar saat halaman load
+document.addEventListener('DOMContentLoaded', function() {
+    updateSelectedItemsBar();
+});
 
 function showSelectedItemsBar() {
     const bar = document.getElementById('selectedItemsBar');
