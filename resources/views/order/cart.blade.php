@@ -57,7 +57,7 @@
         </div>
 
         <!-- Fixed checkout bar at bottom -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t lg:mx-[700px] rounded-2xl lg:mb-10">
+        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t lg:mx-[650px] rounded-2xl lg:mb-10">
             <div class="container mx-auto px-4 py-4">
                 <div class="flex justify-between items-center mb-4">
                     <div>
