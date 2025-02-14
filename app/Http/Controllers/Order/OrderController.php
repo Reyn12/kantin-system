@@ -13,7 +13,7 @@ use Finller\Invoice\InvoiceItem;
 use Finller\Invoice\InvoiceState;
 use Finller\Invoice\InvoiceType;
 use Brick\Money\Money;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class OrderController extends Controller
@@ -128,73 +128,32 @@ class OrderController extends Controller
     }
 
     public function downloadInvoice(Order $order)
-{
-    // Load relations
-    $order->load(['items.product', 'user']);
+    {
+        // Load relations
+        $order->load(['items.product', 'user']);
 
-    // Debug log
-    Log::info('Order data:', [
-        'order_id' => $order->id,
-        'total_harga' => $order->total_harga,
-        'items' => $order->items->map(function($item) {
-            return [
-                'product_name' => $item->product->nama,
-                'harga_satuan' => $item->getRawOriginal('harga_satuan'),
-                'jumlah' => $item->jumlah,
-                'subtotal' => $item->getRawOriginal('harga_satuan') * $item->jumlah
+        // Format data untuk view
+        $customer = [
+            'name' => $order->user->name,
+            'phone' => $order->user->phone,
+            'table' => $order->nomor_meja
+        ];
+
+        $items = [];
+        foreach ($order->items as $item) {
+            $items[$item->product_id] = [
+                'name' => $item->product->nama,
+                'price' => $item->harga_satuan * 1000,
+                'quantity' => $item->jumlah,
+                'subtotal' => ($item->harga_satuan * 1000) * $item->jumlah
             ];
-        })
-    ]);
+        }
 
-    $invoice = Invoice::where('invoiceable_id', $order->id)
-                     ->where('invoiceable_type', Order::class)
-                     ->first();
+        $total = $order->total_harga;
 
-    if ($invoice) {
-        return $invoice->toPdfInvoice()->download();
+        // Generate PDF using dompdf
+        $pdf = PDF::loadView('order.invoice', compact('order', 'customer', 'items', 'total'));
+        return $pdf->download('invoice_' . $order->id . '.pdf');
     }
-
-    // Convert total_harga to IDR
-    $totalAmount = intval($order->getRawOriginal('total_harga'));
-
-    $invoice = new Invoice([
-        'type' => InvoiceType::Invoice,
-        'state' => InvoiceState::Pending,
-        'description' => 'Invoice Meja ' . $order->nomor_meja . ' untuk ' . $order->user->name . ' pada ' . now()->format('d F Y'),
-        'buyer_information' => [
-            'name' => $order->user->name ?? 'Customer',
-            'address' => 'Meja #' . $order->nomor_meja,
-            'phone' => $order->user->phone ?? '-'
-        ],
-        'seller_information' => [
-            'name' => 'Kantin System',
-            'address' => 'Jalan Contoh No. 123',
-            'phone' => '08123456789'
-        ],
-        'created_at' => now(),
-        'total_amount' => Money::of($totalAmount, 'IDR'),
-        'currency' => 'IDR',
-        'due_at' => now() // Ganti due_date jadi due_at
-    ]);
-
-    $invoice->invoiceable()->associate($order);
-    $invoice->save();
-
-    // Add items dari order items
-    foreach ($order->items as $item) {
-        $hargaSatuan = intval($item->getRawOriginal('harga_satuan'));
-        $amount = $hargaSatuan * $item->jumlah;
-        
-        $invoice->items()->create([
-            'label' => $item->product->nama,
-            'unit_price' => Money::of($hargaSatuan, 'IDR'),
-            'quantity' => $item->jumlah,
-            'currency' => 'IDR',
-            'amount' => Money::of($amount, 'IDR')
-        ]);
-    }
-
-    return $invoice->toPdfInvoice()->download();
-}
 
 }
