@@ -12,8 +12,8 @@ use Finller\Invoice\InvoiceState;
 use Finller\Invoice\InvoiceType;
 use Brick\Money\Money;
 use Illuminate\Support\Facades\Auth;
-
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -175,62 +175,26 @@ class OrderController extends Controller
         }
     }
 
-    public function invoice($id) {
+    public function invoice($id)
+    {
         $order = Order::with(['customer', 'kasir', 'orderItems.product'])->findOrFail($id);
-        $invoiceState = null;
-
-        if ($order->status === 'dibayar' || $order->status === 'selesai') {
-            $invoiceState = InvoiceState::Paid;
-        } else if ($order->status === 'dibatalkan') {
-            $invoiceState = InvoiceState::Refunded;
-        } else if ($order->status === 'menunggu_pembayaran') {
-            $invoiceState = InvoiceState::Pending;
-        } else if ($order->status === 'diproses') {
-            $invoiceState = InvoiceState::Pending;
-        }
-
-        $invoice = Invoice::where('invoiceable_id', $order->id)->where('invoiceable_type', Order::class)->first();
-
-        if ($invoice) {
-            if ($invoice->state !== $invoiceState) {
-                $invoice->state = $invoiceState;
-                $invoice->save();
-            }
-
-            return $invoice->toPdfInvoice()->download();
-        }
-
-        $invoice = new Invoice([
-            'type' => InvoiceType::Invoice,
-            'state' => $invoiceState,
-            'description' => 'Invoice Meja ' . $order->nomor_meja . ' untuk ' . $order->customer->name . ' pada ' . $order->created_at->format('d F Y'),
-            'buyer_information' => [
-                'name' => $order->customer->name,
-                'address' => null,
-                'email' => $order->customer->email,
-            ],
-            'seller_information' => [
-                'name' => Auth::user()->name,
-                'address' => null,
-                'email' => Auth::user()->email,
-            ],
-            'created_at' => $order->created_at,
+        
+        // Tambah logging
+        Log::info('Order data:', [
+            'order_id' => $order->id,
+            'items' => $order->orderItems->map(function($item) {
+                return [
+                    'product' => $item->product->nama_produk,
+                    'quantity' => $item->jumlah,
+                    'price' => $item->harga_satuan,
+                    'total' => $item->subtotal
+                ];
+            }),
+            'total' => $order->orderItems->sum('subtotal')
         ]);
-
-        $invoice->buyer()->associate($order->customer);
-        $invoice->invoiceable()->associate($order);
-        $invoice->save();
-
-        $invoice->items()->saveMany($order->items->map(function ($item) {
-            return new InvoiceItem([
-                'label' => $item->product->nama_produk,
-                'unit_price' => Money::of($item->product->harga, 'IDR'),
-                'quantity' => $item->subtotal,
-                'description' => $item->product->deskripsi,
-                'currency' => 'IDR',
-            ]);
-        }));
-
-        return $invoice->toPdfInvoice()->download();
+        
+        $pdf = PDF::loadView('kasir.orders.invoice', compact('order'));
+        
+        return $pdf->download('invoice-' . $order->id . '.pdf');
     }
 }
