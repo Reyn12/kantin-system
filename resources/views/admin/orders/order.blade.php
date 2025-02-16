@@ -211,7 +211,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Kolom Kanan -->
                     <div class="space-y-6">
                         <div class="bg-green-50 p-4 rounded-lg">
@@ -238,11 +237,10 @@
                                 }
                                 <div class="flex justify-between pt-3 border-t border-green-200">
                                     <span class="font-bold text-green-800">Total</span>
-                                    <span class="font-bold text-green-800">Rp ${order.total_harga}</span>
+                                    <span class="font-bold text-green-800">Rp ${Math.floor(order.total_harga).toLocaleString('id-ID')}</span>
                                 </div>
                             </div>
                         </div>
-
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <h4 class="font-bold text-gray-800 mb-3">Catatan</h4>
                             <p class="text-gray-600">${order.catatan || '-'}</p>

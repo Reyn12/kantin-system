@@ -83,12 +83,6 @@ class AdminDashboardController extends Controller
             ->take(10)
             ->get()
             ->map(function ($order) {
-                // Helper function untuk format harga
-                $formatHarga = function($harga) {
-                    $clean = str_replace(['Rp ', '.'], '', $harga);
-                    return (float) $clean;
-                };
-
                 $mainProduct = $order->orderItems->first();
                 $otherProducts = $order->orderItems->count() - 1;
                 
@@ -101,16 +95,16 @@ class AdminDashboardController extends Controller
                 ];
 
                 return [
-                    'id' => str_pad($order->id, 4, '0', STR_PAD_LEFT), // Format jadi #0001
+                    'id' => str_pad($order->id, 4, '0', STR_PAD_LEFT),
                     'nama_produk' => $mainProduct ? 
                         $mainProduct->product->nama_produk . ($otherProducts > 0 ? " (+{$otherProducts} items)" : "") 
                         : 'Produk tidak tersedia',
-                    'total' => $formatHarga($order->total_harga),
+                    'total' => $order->total_harga, 
                     'status' => $statusMap[$order->status] ?? $order->status,
                     'tanggal' => $order->created_at,
                     'customer' => $order->customer ? $order->customer->name : 'Customer tidak ditemukan',
                     'kasir' => $order->kasir ? $order->kasir->name : '-'
-                ];
+                ]; 
             });
 
         return view('admin.dashboard.dashboard', compact(
