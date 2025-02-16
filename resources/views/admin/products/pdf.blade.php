@@ -1,4 +1,3 @@
-// resources/views/admin/products/pdf.blade.php
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +46,7 @@
                 <td>{{ $product->category->nama_kategori }}</td>
                 <td>{{ $product->nama_produk }}</td>
                 <td>{{ $product->deskripsi }}</td>
-                <td>Rp {{ number_format($product->harga * 1000, 0, ',', '.') }}</td>
+                <td>Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
                 <td>{{ $product->stok }}</td>
                 <td>{{ $product->status }}</td>
             </tr>

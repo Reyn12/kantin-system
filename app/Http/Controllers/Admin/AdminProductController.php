@@ -63,7 +63,7 @@ class AdminProductController extends Controller
                 'category_id' => $request->category_id,
                 'nama_produk' => $request->nama_produk,
                 'deskripsi' => $request->deskripsi,
-                'harga' => $request->harga,
+                'harga' => str_replace('.', '', $request->harga),
                 'stok' => $request->stok,
                 'gambar_url' => $gambarPath,
                 'status' => true
@@ -115,9 +115,6 @@ class AdminProductController extends Controller
         Log::info('Mencoba update produk ID: ' . $id, $request->all());
 
         try {
-            $product = Product::findOrFail($id);
-            Log::info('Produk ditemukan');
-
             $request->validate([
                 'category_id' => 'required|exists:categories,id',
                 'nama_produk' => 'required|string|max:255',
@@ -127,11 +124,14 @@ class AdminProductController extends Controller
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
-            $data = [
+            $product = Product::findOrFail($id);
+            Log::info('Produk ditemukan');
+
+            $updateData = [
                 'category_id' => $request->category_id,
                 'nama_produk' => $request->nama_produk,
                 'deskripsi' => $request->deskripsi,
-                'harga' => $request->harga,
+                'harga' => str_replace('.', '', $request->harga),
                 'stok' => $request->stok
             ];
 
@@ -141,11 +141,11 @@ class AdminProductController extends Controller
                     Log::info('Menghapus gambar lama: ' . $product->gambar_url);
                     Storage::disk('public')->delete($product->gambar_url);
                 }
-                $data['gambar_url'] = $request->file('gambar')->store('produk', 'public');
-                Log::info('Gambar baru diupload ke: ' . $data['gambar_url']);
+                $updateData['gambar_url'] = $request->file('gambar')->store('produk', 'public');
+                Log::info('Gambar baru diupload ke: ' . $updateData['gambar_url']);
             }
 
-            $product->update($data);
+            $product->update($updateData);
             Log::info('Produk berhasil diupdate');
             return response()->json(['message' => 'Produk berhasil diupdate']);
 

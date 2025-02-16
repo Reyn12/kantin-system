@@ -18,7 +18,7 @@ class ProductsExport implements FromCollection, WithHeadings
                     'Kategori' => $product->category->nama_kategori,
                     'Nama Produk' => $product->nama_produk,
                     'Deskripsi' => $product->deskripsi,
-                    'Harga' => 'Rp ' . number_format($product->harga * 1000, 0, ',', '.'),
+                    'Harga' => 'Rp ' . number_format($product->harga, 0, ',', '.'),
                     'Stok' => $product->stok,
                     'Status' => $product->status
                 ];
