@@ -27,7 +27,7 @@
                              class="w-16 h-16 object-cover rounded-lg">
                     </td>
                     <td class="px-6 py-4">{{ $product->nama_produk }}</td>
-                    <td class="px-6 py-4">Rp {{ number_format($product->harga * 1000, 0, ',', '.') }}</td>
+                    <td class="px-6 py-4">Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
                     <td class="px-6 py-4">
                         <input type="number" value="{{ $product->stok }}" 
                                class="w-20 px-2 py-1 border rounded-lg"
