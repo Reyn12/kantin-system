@@ -7,9 +7,13 @@
     <div class="flex flex-col gap-6 px-4">
         {{-- Header Section --}}
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
+            
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Daftar Order</h1>
                 <p class="text-sm text-gray-600">Kelola semua order pelanggan disini</p>
+            </div>
+            <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Cari produk..." class="w-full md:w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
         </div>
 
@@ -128,6 +132,34 @@
 
 @push('scripts')
 <script>
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const tableRows = document.querySelectorAll('tbody tr');
+        
+        tableRows.forEach(row => {
+            const orderId = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+            const customer = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            const cashier = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            const tableNo = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const total = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+            const status = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+            
+            if (orderId.includes(searchTerm) || 
+                customer.includes(searchTerm) || 
+                cashier.includes(searchTerm) || 
+                tableNo.includes(searchTerm) ||
+                total.includes(searchTerm) ||
+                status.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
     function viewOrder(id) {
         $.get(`/admin/orders/${id}/edit`, function(order) {
             console.log('Order data:', order);
