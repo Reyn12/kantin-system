@@ -11,6 +11,9 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
             <h2 class="text-2xl font-bold">Manajemen Produk</h2>
             <div class="flex flex-col sm:flex-row w-full md:w-auto gap-2">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Cari produk..." class="w-full md:w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
                 <button onclick="openDownloadModal()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2">
                     <i class="fas fa-download"></i>
                     Download
@@ -51,6 +54,24 @@
 
     @push('scripts')
     <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('tbody tr');
+            
+            tableRows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                
+                if (productName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
         // Function untuk update status
         function updateStatus(id, status) {
             $.ajax({
