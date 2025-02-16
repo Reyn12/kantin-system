@@ -16,18 +16,16 @@
                 <tr class="even:bg-gray-50 odd:bg-white hover:bg-gray-50">
                     <td class="px-6 py-4">
                         @php
-                            $staticImagePath = 'images/products/' . basename($product->gambar_url);
-                            $staticImageExists = file_exists(public_path($staticImagePath));
+                            $isStaticImage = str_contains($product->gambar_url, 'images/products/');
+                            $imagePath = $isStaticImage ? $product->gambar_url : 'storage/' . $product->gambar_url;
                         @endphp
                         
-                        <img src="{{ $staticImageExists 
-                                  ? asset($staticImagePath) 
-                                  : asset('storage/' . $product->gambar_url) }}" 
+                        <img src="{{ asset($imagePath) }}" 
                              alt="{{ $product->nama_produk }}" 
                              class="w-16 h-16 object-cover rounded-lg">
                     </td>
                     <td class="px-6 py-4">{{ $product->nama_produk }}</td>
-                    <td class="px-6 py-4">Rp {{ number_format($product->harga * 1000, 0, ',', '.') }}</td>
+                    <td class="px-6 py-4">Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
                     <td class="px-6 py-4">
                         <input type="number" value="{{ $product->stok }}" 
                                class="w-20 px-2 py-1 border rounded-lg"
